@@ -90,8 +90,8 @@ const { scoreRate, scoreClass, ringColor, scoreText } = useScoreCalculation(scor
 const { isCorrect, isAnswer, isUserWrong, isUserCorrect } = useAnswerValidation(userAnswers)
 
 const timeUsed = computed(() => {
-  if (!store.startTime) return '0:00'
-  const elapsed = Math.floor((Date.now() - store.startTime) / 1000)
+  if (!store.startTime || !store.endTime) return '0:00'
+  const elapsed = Math.floor((store.endTime - store.startTime) / 1000)
   const m = Math.floor(elapsed / 60)
   const s = elapsed % 60
   return `${m}:${s.toString().padStart(2, '0')}`
