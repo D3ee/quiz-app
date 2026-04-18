@@ -17,8 +17,9 @@
 - TypeScript 6.0
 - Element Plus 2.13
 - Vue Router 5.0
-- Pinia 3.0 (状态管理 + 持久化)
+- Pinia 3.0 + pinia-plugin-persistedstate (状态持久化)
 - Vite 8.0
+- unplugin-auto-import + unplugin-vue-components (自动导入)
 
 ## 快速开始
 
@@ -40,19 +41,30 @@ pnpm preview
 
 ```
 src/
-├── data/           # 题库数据
+├── assets/             # 静态资源
+├── components/         # 公共组件
+│   ├── AnalysisCard.vue    # 答案解析卡片
+│   ├── QuestionCard.vue    # 题目展示卡片
+│   └── ScoreRing.vue       # 环形得分组件
+├── composables/        # 组合式函数
+│   ├── useQuestionRenderer.ts  # 题目渲染逻辑
+│   └── useScoreCalculation.ts  # 分数计算逻辑
+├── data/               # 题库数据
 │   ├── javascript.ts
 │   ├── vue2.ts
 │   └── vue3.ts
-├── stores/         # Pinia 状态管理
+├── router/             # 路由配置
+│   └── index.ts
+├── stores/             # Pinia 状态管理
 │   └── quiz.ts
-├── views/          # 页面组件
-│   ├── Home.vue    # 首页 - 选择分类
-│   ├── Quiz.vue    # 答题页
-│   └── Result.vue  # 结果页
-├── composables/    # 组合式函数
-├── types/          # TypeScript 类型定义
-└── router/         # 路由配置
+├── types/              # TypeScript 类型定义
+│   └── index.ts
+├── views/              # 页面组件
+│   ├── Home.vue        # 首页 - 选择分类
+│   ├── Quiz.vue        # 答题页
+│   └── Result.vue      # 结果页
+├── App.vue             # 根组件
+└── main.ts             # 入口文件
 ```
 
 ## 核心功能说明
