@@ -1,5 +1,15 @@
+<!--
+  AnalysisCard 组件 - 答题解析卡片
+  用于结果页展示每道题的详细解析，包括：
+  - 题目序号、正确/错误标记、题型标签
+  - 题目文本（支持代码高亮）
+  - 各选项的正确答案/用户选择标注
+  - 答案解析说明
+-->
 <template>
+  <!-- 根据答题正确与否添加不同的左边框颜色 -->
   <div class="analysis-card" :class="{ correct: isCorrect, wrong: !isCorrect }">
+    <!-- 头部：题号 + 正确/错误标签 + 题型标签 -->
     <div class="analysis-header">
       <span class="q-number">{{ index + 1 }}</span>
       <span class="result-badge" :class="isCorrect ? 'badge-correct' : 'badge-wrong'">
@@ -9,7 +19,9 @@
         {{ question.type === 'single' ? '单选' : '多选' }}
       </span>
     </div>
+    <!-- 题目文本（v-html 渲染 Markdown 代码块） -->
     <div class="q-text" v-html="renderedQuestion"></div>
+    <!-- 选项列表：标注正确答案和用户选择 -->
     <div class="options-review">
       <div 
         v-for="(opt, oi) in question.options" 
@@ -28,6 +40,7 @@
         <span v-if="isUserCorrect(question, oi)" class="opt-tag tag-right">你的选择</span>
       </div>
     </div>
+    <!-- 答案解析 -->
     <div class="explanation-box">
       <div class="explanation-label">解析</div>
       <div class="explanation-text">{{ question.explanation }}</div>
@@ -40,18 +53,20 @@ import { computed } from 'vue'
 import type { Question } from '../types'
 import { useQuestionRenderer } from '../composables/useQuestionRenderer'
 
+/** 组件 Props */
 const props = defineProps<{
-  question: Question
-  index: number
-  isCorrect: boolean
-  isAnswer: (q: Question, optIndex: number) => boolean
-  isUserWrong: (q: Question, optIndex: number) => boolean
-  isUserCorrect: (q: Question, optIndex: number) => boolean
+  question: Question                                              // 题目数据
+  index: number                                                   // 题目序号（从0开始）
+  isCorrect: boolean                                              // 用户是否答对
+  isAnswer: (q: Question, optIndex: number) => boolean            // 判断某选项是否为正确答案
+  isUserWrong: (q: Question, optIndex: number) => boolean         // 判断某选项是否为用户的错误选择
+  isUserCorrect: (q: Question, optIndex: number) => boolean       // 判断某选项是否为用户的正确选择
 }>()
 
-const labels = ['A', 'B', 'C', 'D']
+const labels = ['A', 'B', 'C', 'D'] // 选项字母标签
 const { renderQuestion } = useQuestionRenderer()
 
+/** 将题目文本渲染为 HTML（处理代码块等） */
 const renderedQuestion = computed(() => renderQuestion(props.question.question))
 </script>
 

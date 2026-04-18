@@ -1,3 +1,12 @@
+<!--
+  WrongBook.vue - 错题本页面视图
+  功能：
+  1. 顶部导航栏：返回首页、清空错题按钮
+  2. 空状态提示：无错题时显示鼓励信息
+  3. 分类统计条：按 JS/Vue2/Vue3 统计错题数量
+  4. 错题列表：展示题目内容、正确答案、错误次数、最后错误时间
+  5. 操作：全部错题练习、单条移除
+-->
 <template>
   <div class="wrong-book">
     <div class="page-header">
@@ -86,16 +95,19 @@ function formatAnswer(q: Question): string {
   return (q.answer as number[]).map(i => labels[i]).join('、')
 }
 
+/** 格式化时间戳为 月/日 时:分 */
 function formatTime(ts: number): string {
   const d = new Date(ts)
   return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes().toString().padStart(2, '0')}`
 }
 
+/** 移除单条错题记录 */
 function removeRecord(qid: number) {
   const idx = store.wrongRecords.findIndex(r => r.questionId === qid)
   if (idx >= 0) store.wrongRecords.splice(idx, 1)
 }
 
+/** 清空所有错题记录（弹窗确认） */
 async function handleClear() {
   try {
     await ElMessageBox.confirm('确定清空所有错题记录吗？', '提示', {

@@ -1,3 +1,12 @@
+<!--
+  History.vue - 答题记录页面视图
+  功能：
+  1. 顶部导航栏：返回首页、清空记录按钮
+  2. 空状态提示：无记录时引导去答题
+  3. 正确率趋势图：柱状图展示最近 10 次答题正确率
+  4. 历史记录列表：分类标签、答题模式、得分、用时、日期
+  5. 响应式布局适配移动端
+-->
 <template>
   <div class="history-page">
     <div class="page-header">
@@ -68,40 +77,50 @@ import { ElMessageBox } from 'element-plus'
 const router = useRouter()
 const store = useQuizStore()
 
+/** 分类名称映射 */
 const categoryNames: Record<Category, string> = { javascript: 'JavaScript', vue2: 'Vue 2', vue3: 'Vue 3' }
+/** 答题模式名称映射 */
 const modeNames: Record<QuizMode, string> = { random: '随机', timed: '限时', challenge: '闯关', sequential: '顺序' }
 
+/** 答题历史记录列表 */
 const history = computed(() => store.quizHistory)
+/** 趋势图数据：取最近 10 次记录（按时间正序） */
 const trendData = computed(() => [...history.value].reverse().slice(-10))
 
+/** 根据正确率返回柱状图颜色等级 */
 function getBarClass(rate: number) {
   if (rate >= 0.8) return 'bar-excellent'
   if (rate >= 0.6) return 'bar-good'
   return 'bar-poor'
 }
 
+/** 根据正确率返回分数颜色等级 */
 function getScoreClass(rate: number) {
   if (rate >= 0.8) return 'score-excellent'
   if (rate >= 0.6) return 'score-good'
   return 'score-poor'
 }
 
+/** 格式化日期为 月/日（用于趋势图 X 轴） */
 function formatDate(ts: number): string {
   const d = new Date(ts)
   return `${d.getMonth() + 1}/${d.getDate()}`
 }
 
+/** 格式化完整日期为 月/日 时:分 */
 function formatFullDate(ts: number): string {
   const d = new Date(ts)
   return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes().toString().padStart(2, '0')}`
 }
 
+/** 格式化答题用时（秒 → m:ss） */
 function formatDuration(s: number): string {
   const m = Math.floor(s / 60)
   const sec = s % 60
   return `${m}:${sec.toString().padStart(2, '0')}`
 }
 
+/** 清空所有答题记录（弹窗确认） */
 async function handleClear() {
   try {
     await ElMessageBox.confirm('确定清空所有答题记录吗？', '提示', {

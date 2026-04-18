@@ -1,8 +1,20 @@
+<!--
+  App.vue - 应用根组件
+  功能：
+  1. 提供全局背景装饰（三个渐变光球动画）
+  2. 使用 <router-view> 渲染当前路由页面
+  3. 页面切换时带有淡入淡出过渡动画
+  4. 定义全局 CSS 变量（暗色主题色板）
+  5. 覆盖 Element Plus 组件的暗色样式
+-->
 <template>
+  <!-- 应用外壳容器 -->
   <div class="app-shell">
+    <!-- 背景装饰光球（纯视觉效果，不影响交互） -->
     <div class="bg-orb bg-orb--1"></div>
     <div class="bg-orb bg-orb--2"></div>
     <div class="bg-orb bg-orb--3"></div>
+    <!-- 路由视图：使用 out-in 模式的淡入淡出过渡 -->
     <router-view v-slot="{ Component }">
       <transition name="page-fade" mode="out-in">
         <component :is="Component" />
@@ -11,33 +23,36 @@
   </div>
 </template>
 
+<!-- 全局样式（非 scoped），定义 CSS 变量和基础样式重置 -->
 <style>
+/* ==================== 全局 CSS 变量（暗色主题色板） ==================== */
 :root {
-  --bg-primary: #0a0e1a;
-  --bg-secondary: #111827;
-  --bg-card: rgba(17, 24, 39, 0.8);
-  --bg-card-hover: rgba(30, 41, 59, 0.9);
-  --border-subtle: rgba(99, 102, 241, 0.15);
-  --border-glow: rgba(99, 102, 241, 0.4);
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --accent-indigo: #818cf8;
-  --accent-cyan: #22d3ee;
-  --accent-emerald: #34d399;
-  --accent-rose: #fb7185;
-  --accent-amber: #fbbf24;
-  --gradient-primary: linear-gradient(135deg, #818cf8, #22d3ee);
-  --gradient-success: linear-gradient(135deg, #34d399, #22d3ee);
-  --gradient-danger: linear-gradient(135deg, #fb7185, #f472b6);
-  --gradient-warm: linear-gradient(135deg, #fbbf24, #fb923c);
-  --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.15);
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
-  --radius-lg: 16px;
-  --radius-md: 12px;
-  --radius-sm: 8px;
+  --bg-primary: #0a0e1a;                                          /* 主背景色 */
+  --bg-secondary: #111827;                                        /* 次级背景色 */
+  --bg-card: rgba(17, 24, 39, 0.8);                               /* 卡片背景色（半透明） */
+  --bg-card-hover: rgba(30, 41, 59, 0.9);                         /* 卡片悬停背景色 */
+  --border-subtle: rgba(99, 102, 241, 0.15);                      /* 微妙边框色 */
+  --border-glow: rgba(99, 102, 241, 0.4);                         /* 发光边框色 */
+  --text-primary: #f1f5f9;                                        /* 主文字色 */
+  --text-secondary: #94a3b8;                                      /* 次级文字色 */
+  --text-muted: #64748b;                                          /* 弱化文字色 */
+  --accent-indigo: #818cf8;                                       /* 靛蓝强调色 */
+  --accent-cyan: #22d3ee;                                         /* 青色强调色 */
+  --accent-emerald: #34d399;                                      /* 翡翠绿强调色 */
+  --accent-rose: #fb7185;                                         /* 玫红强调色 */
+  --accent-amber: #fbbf24;                                        /* 琥珀黄强调色 */
+  --gradient-primary: linear-gradient(135deg, #818cf8, #22d3ee);  /* 主渐变（靛蓝→青色） */
+  --gradient-success: linear-gradient(135deg, #34d399, #22d3ee);  /* 成功渐变（绿→青） */
+  --gradient-danger: linear-gradient(135deg, #fb7185, #f472b6);   /* 危险渐变（红→粉） */
+  --gradient-warm: linear-gradient(135deg, #fbbf24, #fb923c);     /* 暖色渐变（黄→橙） */
+  --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.15);              /* 发光阴影 */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);                  /* 卡片阴影 */
+  --radius-lg: 16px;                                              /* 大圆角 */
+  --radius-md: 12px;                                              /* 中圆角 */
+  --radius-sm: 8px;                                               /* 小圆角 */
 }
 
+/* 全局样式重置 */
 * {
   margin: 0;
   padding: 0;
@@ -68,7 +83,7 @@ body {
   background: rgba(99, 102, 241, 0.5);
 }
 
-/* 覆盖 Element Plus 暗色 */
+/* 覆盖 Element Plus 暗色主题样式 */
 .el-card {
   --el-card-bg-color: var(--bg-card) !important;
   --el-card-border-color: var(--border-subtle) !important;

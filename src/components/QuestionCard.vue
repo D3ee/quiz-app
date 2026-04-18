@@ -1,5 +1,15 @@
+<!--
+  QuestionCard 组件 - 答题卡片
+  核心答题交互组件，支持：
+  - 单选题：点击选项即提交答案
+  - 多选题：勾选多个选项后点击"确认选择"提交
+  - 答题后显示正确/错误反馈和解析
+  - 支持已保存答案的回显（切题时恢复状态）
+  - 通过插槽 #header-extra 扩展头部（如收藏按钮）
+-->
 <template>
   <div class="question-card">
+    <!-- 题目头部：题型标签 + 题号 + 答题结果 + 扩展插槽 -->
     <div class="question-header">
       <span class="type-badge" :class="question.type === 'single' ? 'badge-single' : 'badge-multi'">
         {{ question.type === 'single' ? '单选' : '多选' }}
@@ -8,12 +18,16 @@
       <span v-if="answered" class="result-badge" :class="isCorrect ? 'badge-correct' : 'badge-wrong'">
         {{ isCorrect ? '回答正确' : '回答错误' }}
       </span>
+      <!-- 头部扩展插槽（用于放置收藏按钮等） -->
       <slot name="header-extra" />
     </div>
 
+    <!-- 题目文本（支持代码高亮渲染） -->
     <div class="question-text" v-html="renderedQuestion"></div>
 
+    <!-- 选项区域 -->
     <div class="options">
+      <!-- ===== 单选题选项 ===== -->
       <template v-if="question.type === 'single'">
         <div
           v-for="(opt, i) in question.options"
@@ -33,6 +47,7 @@
           <span v-if="answered && isCorrectSelect(i)" class="option-tag tag-right">你选</span>
         </div>
       </template>
+      <!-- ===== 多选题选项 ===== -->
       <template v-else>
         <div
           v-for="(opt, i) in question.options"
@@ -45,6 +60,7 @@
           ]"
           @click="!answered && onMultiToggle(i)"
         >
+          <!-- 多选复选框图标 -->
           <span class="option-check" :class="{ checked: multiAnswer.includes(i) }">
             <svg v-if="multiAnswer.includes(i)" width="12" height="12" viewBox="0 0 12 12" fill="none">
               <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -55,6 +71,7 @@
           <span v-if="answered && isWrongSelect(i)" class="option-tag tag-wrong">你选</span>
           <span v-if="answered && isCorrectSelect(i)" class="option-tag tag-right">你选</span>
         </div>
+        <!-- 多选确认按钮（至少选择一个选项后显示） -->
         <button
           v-if="!answered && multiAnswer.length > 0"
           class="confirm-btn"
@@ -65,7 +82,9 @@
       </template>
     </div>
 
+    <!-- 答题反馈区域（提交答案后显示） -->
     <div v-if="answered" class="feedback">
+      <!-- 正确/错误提示框 -->
       <div class="feedback-box" :class="isCorrect ? 'fb-correct' : 'fb-wrong'">
         <div class="fb-icon">{{ isCorrect ? '✓' : '✗' }}</div>
         <div class="fb-content">
@@ -73,6 +92,7 @@
           <div v-if="!isCorrect" class="fb-answer">正确答案：{{ correctAnswerText }}</div>
         </div>
       </div>
+      <!-- 答案解析 -->
       <div class="explanation-box">
         <div class="explanation-label">解析</div>
         <div class="explanation-text">{{ question.explanation }}</div>
@@ -86,27 +106,31 @@ import { ref, watch, computed } from 'vue'
 import type { Question } from '../types'
 import { useQuestionRenderer } from '../composables/useQuestionRenderer'
 
+/** 组件 Props */
 const props = defineProps<{
-  question: Question
-  index: number
-  total: number
-  savedAnswer?: number | number[]
+  question: Question              // 当前题目数据
+  index: number                   // 当前题目索引（从0开始）
+  total: number                   // 总题数
+  savedAnswer?: number | number[] // 已保存的答案（用于切题时回显）
 }>()
 
+/** 组件事件 */
 const emit = defineEmits<{
-  answer: [questionId: number, answer: number | number[]]
-  'multi-select': [selections: number[]]
+  answer: [questionId: number, answer: number | number[]]  // 提交答案事件
+  'multi-select': [selections: number[]]                   // 多选选项变化事件（实时同步）
 }>()
 
-const labels = ['A', 'B', 'C', 'D']
-const singleAnswer = ref<number | undefined>(undefined)
-const multiAnswer = ref<number[]>([])
-const answered = ref(false)
+const labels = ['A', 'B', 'C', 'D']                       // 选项字母标签
+const singleAnswer = ref<number | undefined>(undefined)    // 单选题用户选择
+const multiAnswer = ref<number[]>([])                      // 多选题用户选择列表
+const answered = ref(false)                                // 是否已提交答案
 
 const { renderQuestion } = useQuestionRenderer()
 
+/** 渲染题目文本为 HTML */
 const renderedQuestion = computed(() => renderQuestion(props.question.question))
 
+/** 判断当前回答是否正确 */
 const isCorrect = computed(() => {
   if (!answered.value) return false
   const q = props.question

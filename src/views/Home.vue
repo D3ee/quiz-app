@@ -1,3 +1,12 @@
+<!--
+  Home.vue - 首页视图
+  功能：
+  1. 展示应用标题和简介（Hero 区域）
+  2. 三大分类卡片（JavaScript / Vue2 / Vue3），可选择抽题数量
+  3. 四种答题模式切换（随机 / 顺序 / 限时 / 闯关）
+  4. 快捷入口：错题本、答题记录、收藏练习
+  5. 底部统计信息展示
+-->
 <template>
   <div class="home">
     <div class="hero">
@@ -110,8 +119,10 @@ import { ElMessage } from 'element-plus'
 const router = useRouter()
 const store = useQuizStore()
 
+/** 当前选中的答题模式，默认随机 */
 const selectedMode = ref<QuizMode>('random')
 
+/** 四种答题模式配置 */
 const modes = [
   { key: 'random' as QuizMode, icon: '🎲', name: '随机模式', desc: '随机抽题' },
   { key: 'sequential' as QuizMode, icon: '📋', name: '顺序模式', desc: '按序做题' },
@@ -119,23 +130,30 @@ const modes = [
   { key: 'challenge' as QuizMode, icon: '🔥', name: '闯关模式', desc: '答错即止' },
 ]
 
+/** 根据题库大小生成可选的抽题数量（5/10/15/20/全部） */
 function buildOptions(pool: number): number[] {
   const opts = [5, 10, 15, 20].filter((n) => n < pool)
   opts.push(pool)
   return opts
 }
 
+/** 三大分类配置：名称、图标、描述、题库大小、可选数量、默认选中数量 */
 const categories = reactive([
   { key: 'javascript' as Category, name: 'JavaScript', icon: 'JS', desc: '闭包、原型链、Promise、Event Loop 等核心知识', pool: getPoolSize('javascript'), options: buildOptions(getPoolSize('javascript')), selected: Math.min(10, getPoolSize('javascript')) },
   { key: 'vue2' as Category, name: 'Vue 2', icon: 'V2', desc: '生命周期、响应式原理、组件通信等', pool: getPoolSize('vue2'), options: buildOptions(getPoolSize('vue2')), selected: Math.min(10, getPoolSize('vue2')) },
   { key: 'vue3' as Category, name: 'Vue 3', icon: 'V3', desc: 'Composition API、ref/reactive、Teleport 等新特性', pool: getPoolSize('vue3'), options: buildOptions(getPoolSize('vue3')), selected: Math.min(10, getPoolSize('vue3')) },
 ])
 
+/** 所有分类题目总数 */
 const totalQuestions = computed(() => categories.reduce((sum, c) => sum + c.pool, 0))
+/** 错题本中的错题数量 */
 const wrongCount = computed(() => store.getWrongCount())
+/** 历史答题次数 */
 const historyCount = computed(() => store.quizHistory.length)
+/** 收藏题目数量 */
 const favCount = computed(() => store.favoriteIds.length)
 
+/** 开始答题：初始化 store 并跳转到答题页 */
 function startQuiz(category: Category, count: number) {
   // 闯关模式使用全部题目，不限制题数
   const actualCount = selectedMode.value === 'challenge'
@@ -145,6 +163,7 @@ function startQuiz(category: Category, count: number) {
   router.push(`/quiz/${category}`)
 }
 
+/** 开始收藏练习：无收藏时提示，有收藏时启动专项练习 */
 function startFav() {
   if (store.favoriteIds.length === 0) {
     ElMessage.info('暂无收藏题目，答题时点击 ⭐ 可收藏')

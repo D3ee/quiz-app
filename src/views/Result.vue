@@ -1,3 +1,12 @@
+<!--
+  Result.vue - 答题结果页面视图
+  功能：
+  1. 顶部导航栏：返回首页、重新答题按钮
+  2. 成绩总览：ScoreRing 环形分数、正确率进度条、用时统计
+  3. 错题提示：显示错题数量，一键跳转错题本
+  4. 题目解析列表：使用 AnalysisCard 逐题展示详细解析
+  5. 底部操作：返回首页 / 重新答题
+-->
 <template>
   <div class="result">
     <div class="result-header">
@@ -83,22 +92,28 @@ const router = useRouter()
 const route = useRoute()
 const store = useQuizStore()
 
+/** 路由守卫：未提交或分类不匹配时重定向首页 */
 const category = route.params.category as Category
 if (!store.submitted || store.currentCategory !== category) {
   router.push('/')
 }
 
+/** 从 store 获取响应式引用 */
 const score = toRef(store, 'score')
 const total = toRef(store, 'total')
 const userAnswers = toRef(store, 'userAnswers')
 
+/** 计算分数相关数据：正确率、评级样式、环形颜色、评语 */
 const { scoreRate, scoreClass, ringColor, scoreText } = useScoreCalculation(score, total)
+/** 答案校验工具函数：判断正确/错误/用户选择 */
 const { isCorrect, isAnswer, isUserWrong, isUserCorrect } = useAnswerValidation(userAnswers)
 
+/** 本次答错的题目数量 */
 const wrongCount = computed(() => {
   return store.questions.filter(q => !isCorrect(q)).length
 })
 
+/** 格式化答题用时为 m:ss */
 const timeUsed = computed(() => {
   if (!store.startTime || !store.endTime) return '0:00'
   const elapsed = Math.floor((store.endTime - store.startTime) / 1000)
@@ -107,6 +122,7 @@ const timeUsed = computed(() => {
   return `${m}:${s.toString().padStart(2, '0')}`
 })
 
+/** 重新答题：重新初始化当前分类并跳转 */
 function retry() {
   store.startQuiz(store.currentCategory)
   router.push(`/quiz/${store.currentCategory}`)

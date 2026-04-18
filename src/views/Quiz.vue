@@ -1,3 +1,12 @@
+<!--
+  Quiz.vue - 答题页面视图
+  功能：
+  1. 顶部导航栏：返回按钮、分类标题、答题进度条、计时器
+  2. 核心答题区：使用 QuestionCard 组件渲染当前题目，支持收藏
+  3. 限时模式倒计时条：每题 30 秒，超时自动跳题
+  4. 闯关模式失败弹窗：显示连续答对题数，支持重试
+  5. 底部导航：上一题/下一题按钮、题目圆点导航、提交答卷
+-->
 <template>
   <div class="quiz">
     <div class="quiz-header">
@@ -112,18 +121,21 @@ const router = useRouter()
 const route = useRoute()
 const store = useQuizStore()
 
+/** 从 store 解构响应式状态 */
 const { currentIndex, total, currentQuestion, questions, userAnswers } = storeToRefs(store)
 
-const elapsed = ref(0)
-const countdown = ref(store.timeLimitPerQuestion)
-let timer: number
-let countdownTimer: number
+const elapsed = ref(0)                             // 已用时间（秒）
+const countdown = ref(store.timeLimitPerQuestion)   // 限时模式倒计时（秒）
+let timer: number                                   // 全局计时器 ID
+let countdownTimer: number                          // 倒计时定时器 ID
 
+/** 当前题目是否已作答 */
 const isAnswered = computed(() => {
   if (!currentQuestion.value) return false
   return currentQuestion.value.id in store.userAnswers
 })
 
+/** 挂载时启动全局计时器，限时模式额外启动倒计时 */
 onMounted(() => {
   timer = setInterval(() => {
     elapsed.value = store.startTime ? Math.floor((Date.now() - store.startTime) / 1000) : 0
@@ -139,6 +151,7 @@ onUnmounted(() => {
   clearInterval(countdownTimer)
 })
 
+/** 启动/重置限时倒计时，超时自动跳题或提交 */
 function startCountdown() {
   clearInterval(countdownTimer)
   countdown.value = store.timeLimitPerQuestion
@@ -163,12 +176,14 @@ watch(currentIndex, () => {
   if (store.currentMode === 'timed') startCountdown()
 })
 
+/** 格式化已用时间为 m:ss 格式 */
 const timeElapsed = computed(() => {
   const m = Math.floor(elapsed.value / 60)
   const s = elapsed.value % 60
   return `${m}:${s.toString().padStart(2, '0')}`
 })
 
+/** 分类名称映射 */
 const categoryNames: Record<Category, string> = {
   javascript: 'JavaScript',
   vue2: 'Vue 2',
@@ -182,6 +197,7 @@ if (!store.questions.length || store.currentCategory !== category) {
 
 const categoryName = computed(() => categoryNames[store.currentCategory])
 
+/** 处理用户提交答案，闯关模式下额外判断对错 */
 function onAnswer(questionId: number, answer: number | number[]) {
   store.setAnswer(questionId, answer)
 
@@ -215,6 +231,7 @@ function retryChallenge() {
   router.push(`/quiz/${store.currentCategory}`)
 }
 
+/** 提交答卷：有未作答题目时弹窗确认 */
 async function handleSubmit() {
   const unanswered = store.questions.filter((q) => !(q.id in store.userAnswers)).length
   if (unanswered > 0) {
