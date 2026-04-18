@@ -40,6 +40,12 @@
       </div>
     </div>
 
+    <div v-if="wrongCount > 0" class="wrong-tip">
+      <span class="wrong-tip-icon">📕</span>
+      <span>本次有 <strong>{{ wrongCount }}</strong> 道错题已自动加入错题本</span>
+      <button class="wrong-tip-btn" @click="router.push('/wrong-book')">查看错题本</button>
+    </div>
+
     <div class="section-header">
       <div class="section-line"></div>
       <h3 class="section-title">题目解析</h3>
@@ -88,6 +94,10 @@ const userAnswers = toRef(store, 'userAnswers')
 
 const { scoreRate, scoreClass, ringColor, scoreText } = useScoreCalculation(score, total)
 const { isCorrect, isAnswer, isUserWrong, isUserCorrect } = useAnswerValidation(userAnswers)
+
+const wrongCount = computed(() => {
+  return store.questions.filter(q => !isCorrect(q)).length
+})
 
 const timeUsed = computed(() => {
   if (!store.startTime || !store.endTime) return '0:00'
@@ -196,6 +206,20 @@ function retry() {
 }
 
 /* Section Header */
+.wrong-tip {
+  display: flex; align-items: center; gap: 10px; padding: 14px 20px;
+  background: rgba(251,113,133,0.06); border: 1px solid rgba(251,113,133,0.2);
+  border-radius: var(--radius-md); margin-bottom: 24px; font-size: 14px; color: var(--text-secondary);
+}
+.wrong-tip-icon { font-size: 18px; }
+.wrong-tip strong { color: var(--accent-rose); }
+.wrong-tip-btn {
+  margin-left: auto; padding: 6px 14px; border: 1px solid rgba(251,113,133,0.3);
+  border-radius: var(--radius-sm); background: transparent; color: var(--accent-rose);
+  font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; white-space: nowrap;
+}
+.wrong-tip-btn:hover { background: rgba(251,113,133,0.1); }
+
 .section-header {
   display: flex;
   align-items: center;

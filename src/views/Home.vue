@@ -28,15 +28,21 @@
             <span class="pool-badge">{{ item.pool }} 题</span>
           </div>
           <div class="count-select" @click.stop>
-            <span class="count-label">抽取数量</span>
-            <el-select v-model="item.selected" size="small" class="dark-select">
-              <el-option
-                v-for="n in item.options"
-                :key="n"
-                :label="n === item.pool ? `全部 (${n})` : `${n} 道`"
-                :value="n"
-              />
-            </el-select>
+            <template v-if="selectedMode === 'challenge'">
+              <span class="count-label">闯关模式</span>
+              <span class="challenge-hint">全部 {{ item.pool }} 题</span>
+            </template>
+            <template v-else>
+              <span class="count-label">抽取数量</span>
+              <el-select v-model="item.selected" size="small" class="dark-select">
+                <el-option
+                  v-for="n in item.options"
+                  :key="n"
+                  :label="n === item.pool ? `全部 (${n})` : `${n} 道`"
+                  :value="n"
+                />
+              </el-select>
+            </template>
           </div>
           <button class="start-btn" @click="startQuiz(item.key, item.selected)">
             <span>开始答题</span>
@@ -44,6 +50,44 @@
               <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-links">
+      <div class="link-card link-wrong" @click="router.push('/wrong-book')">
+        <span class="link-icon">📕</span>
+        <div class="link-info">
+          <span class="link-title">错题本</span>
+          <span class="link-count">{{ wrongCount }} 题</span>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="link-card link-history" @click="router.push('/history')">
+        <span class="link-icon">📊</span>
+        <div class="link-info">
+          <span class="link-title">答题记录</span>
+          <span class="link-count">{{ historyCount }} 次</span>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="link-card link-fav" @click="startFav">
+        <span class="link-icon">⭐</span>
+        <div class="link-info">
+          <span class="link-title">收藏练习</span>
+          <span class="link-count">{{ favCount }} 题</span>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+
+    <div class="mode-section">
+      <h3 class="mode-title">答题模式</h3>
+      <div class="mode-cards">
+        <div v-for="m in modes" :key="m.key" class="mode-card" :class="{ 'mode-active': selectedMode === m.key }" @click="selectedMode = m.key">
+          <span class="mode-icon">{{ m.icon }}</span>
+          <span class="mode-name">{{ m.name }}</span>
+          <span class="mode-desc">{{ m.desc }}</span>
         </div>
       </div>
     </div>
@@ -57,13 +101,23 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuizStore, getPoolSize } from '../stores/quiz'
-import type { Category } from '../types'
+import type { Category, QuizMode } from '../types'
+import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const store = useQuizStore()
+
+const selectedMode = ref<QuizMode>('random')
+
+const modes = [
+  { key: 'random' as QuizMode, icon: '🎲', name: '随机模式', desc: '随机抽题' },
+  { key: 'sequential' as QuizMode, icon: '📋', name: '顺序模式', desc: '按序做题' },
+  { key: 'timed' as QuizMode, icon: '⏱️', name: '限时模式', desc: '每题限时' },
+  { key: 'challenge' as QuizMode, icon: '🔥', name: '闯关模式', desc: '答错即止' },
+]
 
 function buildOptions(pool: number): number[] {
   const opts = [5, 10, 15, 20].filter((n) => n < pool)
@@ -78,10 +132,27 @@ const categories = reactive([
 ])
 
 const totalQuestions = computed(() => categories.reduce((sum, c) => sum + c.pool, 0))
+const wrongCount = computed(() => store.getWrongCount())
+const historyCount = computed(() => store.quizHistory.length)
+const favCount = computed(() => store.favoriteIds.length)
 
 function startQuiz(category: Category, count: number) {
-  store.startQuiz(category, count)
+  // 闯关模式使用全部题目，不限制题数
+  const actualCount = selectedMode.value === 'challenge'
+    ? undefined
+    : count
+  store.startQuiz(category, actualCount, selectedMode.value)
   router.push(`/quiz/${category}`)
+}
+
+function startFav() {
+  if (store.favoriteIds.length === 0) {
+    ElMessage.info('暂无收藏题目，答题时点击 ⭐ 可收藏')
+    return
+  }
+  if (store.startFavoriteQuiz()) {
+    router.push(`/quiz/${store.currentCategory}`)
+  }
 }
 </script>
 
@@ -271,6 +342,11 @@ function startQuiz(category: Category, count: number) {
 .dark-select {
   width: 110px;
 }
+.challenge-hint {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-amber);
+}
 
 /* Start Button */
 .start-btn {
@@ -326,5 +402,55 @@ function startQuiz(category: Category, count: number) {
     grid-template-columns: 1fr;
     gap: 16px;
   }
+  .quick-links {
+    grid-template-columns: 1fr !important;
+  }
+  .mode-cards {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 }
+
+/* Quick Links */
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.link-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(12px);
+  color: var(--text-secondary);
+}
+.link-card:hover {
+  border-color: var(--border-glow);
+  transform: translateY(-2px);
+}
+.link-icon { font-size: 24px; }
+.link-info { flex: 1; display: flex; flex-direction: column; }
+.link-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.link-count { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* Mode Section */
+.mode-section { margin-bottom: 32px; }
+.mode-title { font-size: 16px; font-weight: 600; color: var(--text-secondary); margin: 0 0 16px; text-align: center; }
+.mode-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.mode-card {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 14px 8px; background: var(--bg-card); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; backdrop-filter: blur(12px);
+}
+.mode-card:hover { border-color: var(--border-glow); }
+.mode-card.mode-active { border-color: var(--accent-indigo); background: rgba(99,102,241,0.08); }
+.mode-icon { font-size: 22px; }
+.mode-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.mode-desc { font-size: 11px; color: var(--text-muted); }
 </style>

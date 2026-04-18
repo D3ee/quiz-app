@@ -27,6 +27,8 @@ const router = createRouter({
         }
       },
     },
+    { path: '/wrong-book', name: 'wrongBook', component: () => import('../views/WrongBook.vue') },
+    { path: '/history', name: 'history', component: () => import('../views/History.vue') },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })

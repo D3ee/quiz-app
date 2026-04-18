@@ -8,6 +8,7 @@
       <span v-if="answered" class="result-badge" :class="isCorrect ? 'badge-correct' : 'badge-wrong'">
         {{ isCorrect ? '回答正确' : '回答错误' }}
       </span>
+      <slot name="header-extra" />
     </div>
 
     <div class="question-text" v-html="renderedQuestion"></div>

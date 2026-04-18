@@ -27,7 +27,30 @@
       :saved-answer="userAnswers[currentQuestion.id]"
       @answer="onAnswer"
       @multi-select="onAnswer(currentQuestion!.id, $event)"
-    />
+    >
+      <template #header-extra>
+        <button class="fav-btn" :class="{ 'is-fav': store.isFavorite(currentQuestion.id) }" @click="store.toggleFavorite(currentQuestion.id)">
+          {{ store.isFavorite(currentQuestion.id) ? '★' : '☆' }}
+        </button>
+      </template>
+    </QuestionCard>
+
+    <div v-if="store.currentMode === 'timed' && !isAnswered" class="countdown-bar">
+      <div class="countdown-fill" :class="{ 'countdown-warn': countdown <= 10 }" :style="{ width: `${(countdown / store.timeLimitPerQuestion) * 100}%` }"></div>
+      <span class="countdown-text">{{ countdown }}s</span>
+    </div>
+
+    <div v-if="store.challengeFailed" class="challenge-over">
+      <div class="challenge-over-box">
+        <div class="challenge-icon">💥</div>
+        <h3>闯关结束！</h3>
+        <p>连续答对 <strong>{{ store.challengeStreak }}</strong> 题</p>
+        <div class="challenge-actions">
+          <button class="action-btn action-home" @click="router.push('/')">返回首页</button>
+          <button class="action-btn action-retry" @click="retryChallenge">再来一次</button>
+        </div>
+      </div>
+    </div>
 
     <div class="quiz-footer">
       <button
@@ -77,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { ElMessageBox } from 'element-plus'
@@ -92,15 +115,53 @@ const store = useQuizStore()
 const { currentIndex, total, currentQuestion, questions, userAnswers } = storeToRefs(store)
 
 const elapsed = ref(0)
+const countdown = ref(store.timeLimitPerQuestion)
 let timer: number
+let countdownTimer: number
+
+const isAnswered = computed(() => {
+  if (!currentQuestion.value) return false
+  return currentQuestion.value.id in store.userAnswers
+})
 
 onMounted(() => {
   timer = setInterval(() => {
     elapsed.value = store.startTime ? Math.floor((Date.now() - store.startTime) / 1000) : 0
   }, 1000)
+
+  if (store.currentMode === 'timed') {
+    startCountdown()
+  }
 })
 
-onUnmounted(() => clearInterval(timer))
+onUnmounted(() => {
+  clearInterval(timer)
+  clearInterval(countdownTimer)
+})
+
+function startCountdown() {
+  clearInterval(countdownTimer)
+  countdown.value = store.timeLimitPerQuestion
+  countdownTimer = setInterval(() => {
+    if (isAnswered.value) return
+    countdown.value--
+    if (countdown.value <= 0) {
+      clearInterval(countdownTimer)
+      // 超时自动跳下一题
+      if (currentIndex.value < total.value - 1) {
+        store.nextQuestion()
+      } else {
+        store.submit()
+        router.push(`/result/${store.currentCategory}`)
+      }
+    }
+  }, 1000)
+}
+
+// 限时模式：切题时重置倒计时
+watch(currentIndex, () => {
+  if (store.currentMode === 'timed') startCountdown()
+})
 
 const timeElapsed = computed(() => {
   const m = Math.floor(elapsed.value / 60)
@@ -123,10 +184,35 @@ const categoryName = computed(() => categoryNames[store.currentCategory])
 
 function onAnswer(questionId: number, answer: number | number[]) {
   store.setAnswer(questionId, answer)
+
+  // 闯关模式：判断对错
+  if (store.currentMode === 'challenge') {
+    const q = store.questions.find(q => q.id === questionId)
+    if (q) {
+      let correct = false
+      if (q.type === 'single') {
+        correct = answer === q.answer
+      } else {
+        const ans = q.answer as number[]
+        const user = answer as number[]
+        correct = ans.length === user.length && ans.every(a => user.includes(a))
+      }
+      if (correct) {
+        store.challengeStreak++
+      } else {
+        store.challengeFailAt()
+      }
+    }
+  }
 }
 
 function goHome() {
   router.push('/')
+}
+
+function retryChallenge() {
+  store.startQuiz(store.currentCategory, store.questions.length, 'challenge')
+  router.push(`/quiz/${store.currentCategory}`)
 }
 
 async function handleSubmit() {
@@ -308,4 +394,54 @@ async function handleSubmit() {
   transform: scale(1.4);
   box-shadow: 0 0 10px rgba(129, 140, 248, 0.5);
 }
+
+/* Favorite Button */
+.fav-btn {
+  background: none; border: none; font-size: 20px; cursor: pointer;
+  color: var(--text-muted); transition: all 0.2s; padding: 4px 8px; line-height: 1;
+}
+.fav-btn.is-fav { color: var(--accent-amber); text-shadow: 0 0 8px rgba(251,191,36,0.5); }
+.fav-btn:hover { transform: scale(1.2); }
+
+/* Countdown Bar */
+.countdown-bar {
+  margin-top: 12px; height: 6px; border-radius: 3px;
+  background: rgba(99,102,241,0.1); overflow: hidden; position: relative;
+}
+.countdown-fill {
+  height: 100%; border-radius: 3px; background: var(--gradient-primary);
+  transition: width 1s linear;
+}
+.countdown-fill.countdown-warn { background: var(--gradient-danger); }
+.countdown-text {
+  position: absolute; right: 0; top: -20px; font-size: 12px;
+  font-weight: 600; color: var(--text-secondary); font-variant-numeric: tabular-nums;
+}
+
+/* Challenge Over */
+.challenge-over {
+  position: fixed; inset: 0; z-index: 100; display: flex;
+  align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+}
+.challenge-over-box {
+  background: var(--bg-secondary); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg); padding: 40px; text-align: center;
+  max-width: 360px; width: 90%;
+}
+.challenge-icon { font-size: 48px; margin-bottom: 12px; }
+.challenge-over-box h3 { font-size: 22px; color: var(--text-primary); margin: 0 0 8px; }
+.challenge-over-box p { color: var(--text-secondary); margin: 0 0 24px; }
+.challenge-over-box strong { color: var(--accent-amber); font-size: 24px; }
+.challenge-actions { display: flex; gap: 12px; justify-content: center; }
+.action-btn {
+  padding: 10px 24px; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s;
+}
+.action-home {
+  background: var(--bg-card); border: 1px solid var(--border-subtle); color: var(--text-secondary);
+}
+.action-home:hover { border-color: var(--border-glow); color: var(--text-primary); }
+.action-retry { background: var(--gradient-primary); border: none; color: #fff; }
+.action-retry:hover { box-shadow: 0 4px 16px rgba(99,102,241,0.3); }
 </style>
