@@ -31,6 +31,7 @@ export const useQuizStore = defineStore('quiz', () => {
   const submitted = ref(false)
   const questions = ref<Question[]>([])
   const startTime = ref(0)
+  const endTime = ref(0)
   const usedQuestionIds = ref<Record<Category, number[]>>({
     javascript: [],
     vue2: [],
@@ -62,6 +63,7 @@ function startQuiz(category: Category, count?: number) {
     userAnswers.value = {}
     submitted.value = false
     startTime.value = Date.now()
+    endTime.value = 0
     
     const allQuestions = questionPool[category]
     const usedIds = new Set(usedQuestionIds.value[category])
@@ -98,15 +100,16 @@ function startQuiz(category: Category, count?: number) {
 
   function submit() {
     submitted.value = true
+    endTime.value = Date.now()
   }
 
   return {
     currentCategory, currentIndex, userAnswers, submitted,
-    questions, currentQuestion, total, score, usedQuestionIds, startTime,
+    questions, currentQuestion, total, score, usedQuestionIds, startTime, endTime,
     startQuiz, setAnswer, nextQuestion, prevQuestion, submit,
   }
 }, {
   persist: {
-    paths: ['usedQuestionIds', 'currentCategory', 'currentIndex', 'questions', 'userAnswers', 'submitted', 'startTime'],
-  } as any,
+    pick: ['usedQuestionIds', 'currentCategory', 'currentIndex', 'questions', 'userAnswers', 'submitted', 'startTime', 'endTime'],
+  },
 })
