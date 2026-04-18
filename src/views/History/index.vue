@@ -80,8 +80,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useQuizStore } from '../stores/quiz'
-import type { Category, QuizMode } from '../types'
+import { useQuizStore } from '../../stores/quiz'
+import type { Category, QuizMode } from '../../types'
 import { ElMessageBox } from 'element-plus'
 
 const router = useRouter()

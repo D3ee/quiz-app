@@ -125,8 +125,8 @@
 <script setup lang="ts">
 import { reactive, computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useQuizStore, getPoolSize } from '../stores/quiz'
-import type { Category, QuizMode } from '../types'
+import { useQuizStore, getPoolSize } from '../../stores/quiz'
+import type { Category, QuizMode } from '../../types'
 import { ElMessage } from 'element-plus'
 
 const router = useRouter()

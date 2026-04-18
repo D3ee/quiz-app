@@ -13,12 +13,12 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     // 首页 - 分类选择与模式设置
-    { path: '/', name: 'home', component: () => import('../views/Home.vue') },
+    { path: '/', name: 'home', component: () => import('../views/Home/index.vue') },
     {
       // 答题页 - 动态路由参数 :category 指定分类
       path: '/quiz/:category',
       name: 'quiz',
-      component: () => import('../views/Quiz.vue'),
+      component: () => import('../views/Quiz/index.vue'),
       // 路由守卫：校验分类参数是否合法，非法则重定向首页
       beforeEnter: (to) => {
         if (!validCategories.includes(to.params.category as Category)) {
@@ -30,7 +30,7 @@ const router = createRouter({
       // 结果页 - 展示答题成绩和题目解析
       path: '/result/:category',
       name: 'result',
-      component: () => import('../views/Result.vue'),
+      component: () => import('../views/Result/index.vue'),
       beforeEnter: (to) => {
         if (!validCategories.includes(to.params.category as Category)) {
           return '/'
@@ -38,9 +38,9 @@ const router = createRouter({
       },
     },
     // 错题本页面
-    { path: '/wrong-book', name: 'wrongBook', component: () => import('../views/WrongBook.vue') },
+    { path: '/wrong-book', name: 'wrongBook', component: () => import('../views/WrongBook/index.vue') },
     // 答题历史记录页面
-    { path: '/history', name: 'history', component: () => import('../views/History.vue') },
+    { path: '/history', name: 'history', component: () => import('../views/History/index.vue') },
     // 兜底路由：未匹配的路径重定向到首页
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],

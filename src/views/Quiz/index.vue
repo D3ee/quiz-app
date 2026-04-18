@@ -124,9 +124,9 @@ import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { ElMessageBox } from 'element-plus'
-import { useQuizStore } from '../stores/quiz'
-import QuestionCard from '../components/QuestionCard.vue'
-import type { Category } from '../types'
+import { useQuizStore } from '../../stores/quiz'
+import QuestionCard from '../../components/QuestionCard.vue'
+import type { Category } from '../../types'
 
 const router = useRouter()
 const route = useRoute()

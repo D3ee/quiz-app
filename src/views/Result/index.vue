@@ -92,11 +92,11 @@
 <script setup lang="ts">
 import { toRef, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useQuizStore } from '../stores/quiz'
-import { useScoreCalculation, useAnswerValidation } from '../composables/useScoreCalculation'
-import ScoreRing from '../components/ScoreRing.vue'
-import AnalysisCard from '../components/AnalysisCard.vue'
-import type { Category } from '../types'
+import { useQuizStore } from '../../stores/quiz'
+import { useScoreCalculation, useAnswerValidation } from '../../composables/useScoreCalculation'
+import ScoreRing from '../../components/ScoreRing.vue'
+import AnalysisCard from '../../components/AnalysisCard.vue'
+import type { Category } from '../../types'
 
 const router = useRouter()
 const route = useRoute()

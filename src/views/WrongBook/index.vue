@@ -66,12 +66,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useQuizStore } from '../stores/quiz'
-import { useQuestionRenderer } from '../composables/useQuestionRenderer'
-import type { Category, Question } from '../types'
-import { javascriptQuestions } from '../data/javascript'
-import { vue2Questions } from '../data/vue2'
-import { vue3Questions } from '../data/vue3'
+import { useQuizStore } from '../../stores/quiz'
+import { useQuestionRenderer } from '../../composables/useQuestionRenderer'
+import type { Category, Question } from '../../types'
+import { javascriptQuestions } from '../../data/javascript'
+import { vue2Questions } from '../../data/vue2'
+import { vue3Questions } from '../../data/vue3'
 import { ElMessageBox } from 'element-plus'
 
 const router = useRouter()
