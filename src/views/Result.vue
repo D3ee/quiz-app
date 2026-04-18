@@ -9,6 +9,7 @@
 -->
 <template>
   <div class="result">
+    <!-- 顶部导航栏：返回首页 + 标题 + 重新答题 -->
     <div class="result-header">
       <button class="back-btn" @click="router.push('/')">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -26,7 +27,9 @@
       </button>
     </div>
 
+    <!-- 成绩总览区域：环形分数 + 正确率进度条 + 用时统计 -->
     <div class="score-section">
+      <!-- ScoreRing 环形分数组件 -->
       <ScoreRing 
         :score="store.score" 
         :total="store.total" 
@@ -34,7 +37,9 @@
         :ring-color="ringColor" 
       />
       <div class="score-info">
+        <!-- 评语文字（如"太棒了！"） -->
         <p class="score-text">{{ scoreText }}</p>
+        <!-- 正确率进度条 -->
         <div class="score-rate-bar">
           <span class="rate-label">正确率</span>
           <div class="rate-track">
@@ -42,6 +47,7 @@
           </div>
           <span class="rate-value">{{ Math.round(scoreRate * 100) }}%</span>
         </div>
+        <!-- 答题用时 -->
         <div class="score-rate-bar">
           <span class="rate-label">用时</span>
           <span class="rate-value">{{ timeUsed }}</span>
@@ -49,18 +55,21 @@
       </div>
     </div>
 
+    <!-- 错题提示条：有错题时显示，可一键跳转错题本 -->
     <div v-if="wrongCount > 0" class="wrong-tip">
       <span class="wrong-tip-icon">📕</span>
       <span>本次有 <strong>{{ wrongCount }}</strong> 道错题已自动加入错题本</span>
       <button class="wrong-tip-btn" @click="router.push('/wrong-book')">查看错题本</button>
     </div>
 
+    <!-- 题目解析分隔标题 -->
     <div class="section-header">
       <div class="section-line"></div>
       <h3 class="section-title">题目解析</h3>
       <div class="section-line"></div>
     </div>
 
+    <!-- 逐题解析列表：使用 AnalysisCard 组件 -->
     <AnalysisCard
       v-for="(q, i) in store.questions"
       :key="q.id"
@@ -72,6 +81,7 @@
       :is-user-correct="isUserCorrect"
     />
 
+    <!-- 底部操作按钮：返回首页 / 重新答题 -->
     <div class="bottom-actions">
       <button class="action-btn action-home" @click="router.push('/')">返回首页</button>
       <button class="action-btn action-retry" @click="retry">重新答题</button>

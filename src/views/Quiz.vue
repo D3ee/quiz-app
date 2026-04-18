@@ -9,6 +9,7 @@
 -->
 <template>
   <div class="quiz">
+    <!-- 顶部导航栏：返回按钮 + 分类标题 + 进度条 + 计时器 -->
     <div class="quiz-header">
       <button class="back-btn" @click="goHome">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -16,6 +17,7 @@
         </svg>
         <span>返回</span>
       </button>
+      <!-- 中间区域：分类名称 + 答题进度条 -->
       <div class="header-center">
         <h2 class="quiz-title">{{ categoryName }}</h2>
         <div class="progress-wrap">
@@ -25,9 +27,11 @@
           <span class="progress-text">{{ currentIndex + 1 }} / {{ total }}</span>
         </div>
       </div>
+      <!-- 右侧计时器：显示已用时间 -->
       <div class="timer">⏱ {{ timeElapsed }}</div>
     </div>
 
+    <!-- 核心答题区：渲染当前题目，插槽中放置收藏按钮 -->
     <QuestionCard
       v-if="currentQuestion"
       :question="currentQuestion"
@@ -37,6 +41,7 @@
       @answer="onAnswer"
       @multi-select="onAnswer(currentQuestion!.id, $event)"
     >
+      <!-- 题目卡片右上角：收藏/取消收藏按钮 -->
       <template #header-extra>
         <button class="fav-btn" :class="{ 'is-fav': store.isFavorite(currentQuestion.id) }" @click="store.toggleFavorite(currentQuestion.id)">
           {{ store.isFavorite(currentQuestion.id) ? '★' : '☆' }}
@@ -44,11 +49,13 @@
       </template>
     </QuestionCard>
 
+    <!-- 限时模式倒计时进度条：未作答时显示，<=10s 变红警告 -->
     <div v-if="store.currentMode === 'timed' && !isAnswered" class="countdown-bar">
       <div class="countdown-fill" :class="{ 'countdown-warn': countdown <= 10 }" :style="{ width: `${(countdown / store.timeLimitPerQuestion) * 100}%` }"></div>
       <span class="countdown-text">{{ countdown }}s</span>
     </div>
 
+    <!-- 闯关模式失败弹窗：显示连续答对题数，可重试或返回首页 -->
     <div v-if="store.challengeFailed" class="challenge-over">
       <div class="challenge-over-box">
         <div class="challenge-icon">💥</div>
@@ -61,7 +68,9 @@
       </div>
     </div>
 
+    <!-- 底部导航栏：上一题/下一题按钮 + 题目圆点导航 + 提交按钮 -->
     <div class="quiz-footer">
+      <!-- 上一题按钮：第一题时禁用 -->
       <button
         class="nav-btn"
         :class="{ disabled: currentIndex === 0 }"
@@ -74,6 +83,7 @@
         上一题
       </button>
 
+      <!-- 题目圆点导航：已答题绿色、当前题高亮放大，点击可跳转 -->
       <div class="question-dots">
         <span
           v-for="(q, i) in questions"
@@ -84,6 +94,7 @@
         />
       </div>
 
+      <!-- 下一题按钮 / 最后一题时显示提交按钮 -->
       <button
         v-if="currentIndex < total - 1"
         class="nav-btn nav-btn--primary"

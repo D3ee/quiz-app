@@ -9,6 +9,7 @@
 -->
 <template>
   <div class="wrong-book">
+    <!-- 顶部导航栏：返回首页 + 标题 + 清空按钮 -->
     <div class="page-header">
       <button class="back-btn" @click="router.push('/')">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 4L6 9L11 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -19,6 +20,7 @@
       <span v-else style="width:60px"></span>
     </div>
 
+    <!-- 空状态：无错题时显示鼓励信息 -->
     <div v-if="wrongRecords.length === 0" class="empty-state">
       <div class="empty-icon">🎉</div>
       <p class="empty-text">暂无错题，继续保持！</p>
@@ -26,6 +28,7 @@
     </div>
 
     <template v-else>
+      <!-- 分类统计条：按分类显示错题数量 + 全部错题练习按钮 -->
       <div class="stats-bar">
         <div v-for="item in categoryStats" :key="item.key" class="stat-chip" :class="`chip-${item.key}`">
           {{ item.name }} <strong>{{ item.count }}</strong>
@@ -33,18 +36,23 @@
         <button class="start-wrong-btn" @click="startAll">全部错题练习</button>
       </div>
 
+      <!-- 错题列表：逐条展示题目、正确答案、错误次数、时间 -->
       <div class="wrong-list">
         <div v-for="(record, i) in wrongWithQuestion" :key="record.questionId" class="wrong-card">
+          <!-- 错题卡片头部：序号 + 分类标签 + 错误次数 -->
           <div class="wrong-header">
             <span class="wrong-index">{{ i + 1 }}</span>
             <span class="cat-badge" :class="`badge-${record.category}`">{{ categoryNames[record.category] }}</span>
             <span class="wrong-count">错 {{ record.wrongCount }} 次</span>
           </div>
+          <!-- 题目内容（支持代码高亮渲染） -->
           <div class="wrong-question" v-html="renderQuestion(record.question!.question)"></div>
+          <!-- 正确答案 -->
           <div class="wrong-answer">
             <span class="answer-label">正确答案：</span>
             <span class="answer-value">{{ formatAnswer(record.question!) }}</span>
           </div>
+          <!-- 底部：最后错误时间 + 移除按钮 -->
           <div class="wrong-footer">
             <span class="wrong-time">{{ formatTime(record.lastWrongTime) }}</span>
             <button class="remove-btn" @click="removeRecord(record.questionId)">移除</button>

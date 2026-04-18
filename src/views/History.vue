@@ -9,6 +9,7 @@
 -->
 <template>
   <div class="history-page">
+    <!-- 顶部导航栏：返回首页 + 标题 + 清空记录按钮 -->
     <div class="page-header">
       <button class="back-btn" @click="router.push('/')">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 4L6 9L11 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -19,6 +20,7 @@
       <span v-else style="width:60px"></span>
     </div>
 
+    <!-- 空状态：无记录时引导去答题 -->
     <div v-if="history.length === 0" class="empty-state">
       <div class="empty-icon">📋</div>
       <p class="empty-text">暂无答题记录</p>
@@ -26,12 +28,15 @@
     </div>
 
     <template v-else>
+      <!-- 正确率趋势图：柱状图展示最近 10 次答题正确率 -->
       <div class="trend-section">
         <h3 class="section-label">正确率趋势（最近 10 次）</h3>
         <div class="trend-chart">
+          <!-- Y 轴刻度标签 -->
           <div class="chart-y-axis">
             <span>100%</span><span>50%</span><span>0%</span>
           </div>
+          <!-- 柱状图区域：每根柱子代表一次答题，颜色按正确率分级 -->
           <div class="chart-bars">
             <div v-for="(item, i) in trendData" :key="i" class="bar-wrap">
               <div class="bar-track">
@@ -39,24 +44,29 @@
                   <span class="bar-value">{{ Math.round(item.scoreRate * 100) }}%</span>
                 </div>
               </div>
+              <!-- X 轴日期标签 -->
               <span class="bar-label">{{ formatDate(item.date) }}</span>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- 历史记录列表：每条显示分类、模式、得分、用时、日期 -->
       <div class="history-list">
         <div v-for="item in history" :key="item.id" class="history-card">
+          <!-- 左侧：分类标签 + 答题模式标签 -->
           <div class="history-left">
             <span class="cat-badge" :class="`badge-${item.category}`">{{ categoryNames[item.category] }}</span>
             <span class="mode-badge">{{ modeNames[item.mode] }}</span>
           </div>
+          <!-- 中间：得分（正确数/总数）+ 正确率百分比 -->
           <div class="history-center">
             <div class="history-score">
               <span class="score-num" :class="getScoreClass(item.scoreRate)">{{ item.correctCount }}/{{ item.totalCount }}</span>
               <span class="score-rate">{{ Math.round(item.scoreRate * 100) }}%</span>
             </div>
           </div>
+          <!-- 右侧：答题用时 + 日期 -->
           <div class="history-right">
             <span class="history-time">{{ formatDuration(item.timeUsed) }}</span>
             <span class="history-date">{{ formatFullDate(item.date) }}</span>

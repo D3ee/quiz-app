@@ -9,6 +9,7 @@
 -->
 <template>
   <div class="home">
+    <!-- Hero 区域：应用标题、副标题 -->
     <div class="hero">
       <div class="hero-badge">Frontend Quiz</div>
       <h1 class="title">
@@ -18,6 +19,7 @@
       <p class="subtitle">选择一个分类，设置题目数量，检验你的前端功力</p>
     </div>
 
+    <!-- 分类卡片区域：遍历 JS/Vue2/Vue3 三大分类 -->
     <div class="categories">
       <div
         v-for="(item, idx) in categories"
@@ -26,16 +28,20 @@
         :class="`card-${item.key}`"
         :style="{ animationDelay: `${idx * 0.1}s` }"
       >
+        <!-- 卡片悬浮光效层 -->
         <div class="card-glow"></div>
         <div class="card-content">
+          <!-- 分类图标 -->
           <div class="card-icon" :class="`icon-${item.key}`">
             <span>{{ item.icon }}</span>
           </div>
           <h2 class="card-title">{{ item.name }}</h2>
           <p class="card-desc">{{ item.desc }}</p>
+          <!-- 题库数量标签 -->
           <div class="card-meta">
             <span class="pool-badge">{{ item.pool }} 题</span>
           </div>
+          <!-- 抽题数量选择：闯关模式显示全部题数，其他模式显示下拉选择 -->
           <div class="count-select" @click.stop>
             <template v-if="selectedMode === 'challenge'">
               <span class="count-label">闯关模式</span>
@@ -53,6 +59,7 @@
               </el-select>
             </template>
           </div>
+          <!-- 开始答题按钮 -->
           <button class="start-btn" @click="startQuiz(item.key, item.selected)">
             <span>开始答题</span>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -63,7 +70,9 @@
       </div>
     </div>
 
+    <!-- 快捷入口区域：错题本、答题记录、收藏练习 -->
     <div class="quick-links">
+      <!-- 错题本入口 -->
       <div class="link-card link-wrong" @click="router.push('/wrong-book')">
         <span class="link-icon">📕</span>
         <div class="link-info">
@@ -72,6 +81,7 @@
         </div>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
+      <!-- 答题记录入口 -->
       <div class="link-card link-history" @click="router.push('/history')">
         <span class="link-icon">📊</span>
         <div class="link-info">
@@ -80,6 +90,7 @@
         </div>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
+      <!-- 收藏练习入口 -->
       <div class="link-card link-fav" @click="startFav">
         <span class="link-icon">⭐</span>
         <div class="link-info">
@@ -90,6 +101,7 @@
       </div>
     </div>
 
+    <!-- 答题模式选择区域：随机/顺序/限时/闯关 -->
     <div class="mode-section">
       <h3 class="mode-title">答题模式</h3>
       <div class="mode-cards">
@@ -101,6 +113,7 @@
       </div>
     </div>
 
+    <!-- 底部统计信息 -->
     <div class="footer-hint">
       <span>共 {{ totalQuestions }} 道题目</span>
       <span class="dot-sep"></span>
