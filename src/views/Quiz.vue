@@ -26,7 +26,7 @@
       :total="total"
       :saved-answer="userAnswers[currentQuestion.id]"
       @answer="onAnswer"
-      @multi-select="multiSelections = $event"
+      @multi-select="onAnswer(currentQuestion!.id, $event)"
     />
 
     <div class="quiz-footer">
@@ -186,15 +186,6 @@ async function handleSubmit() {
 .header-center {
   flex: 1;
   text-align: center;
-}
-.timer {
-  padding: 6px 12px;
-  border-radius: var(--radius-sm);
-  background: rgba(99, 102, 241, 0.1);
-  color: var(--accent-indigo);
-  font-size: 14px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
 }
 .timer {
   padding: 6px 12px;
