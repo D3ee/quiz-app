@@ -37,6 +37,17 @@ const router = createRouter({
         }
       },
     },
+    // 题目列表页面
+    {
+      path: '/questions/:category',
+      name: 'questionList',
+      component: () => import('../views/QuestionList/index.vue'),
+      beforeEnter: (to) => {
+        if (!validCategories.includes(to.params.category as Category)) {
+          return '/'
+        }
+      },
+    },
     // 错题本页面
     { path: '/wrong-book', name: 'wrongBook', component: () => import('../views/WrongBook/index.vue') },
     // 答题历史记录页面

@@ -59,13 +59,18 @@
               </el-select>
             </template>
           </div>
-          <!-- 开始答题按钮 -->
-          <button class="start-btn" @click="startQuiz(item.key, item.selected)">
-            <span>开始答题</span>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
+          <!-- 按钮组 -->
+          <div class="btn-group">
+            <button class="browse-btn" @click="router.push(`/questions/${item.key}`)">
+              <span>📋 浏览题目</span>
+            </button>
+            <button class="start-btn" @click="startQuiz(item.key, item.selected)">
+              <span>开始答题</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -303,7 +308,7 @@ function startFav() {
 
 .card-content {
   position: relative;
-  padding: 32px 24px 24px;
+  padding: 36px 32px 28px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -389,21 +394,49 @@ function startFav() {
   color: var(--accent-amber);
 }
 
-/* Start Button */
+/* Button Group */
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.browse-btn {
+  flex: 0 0 auto;
+  min-width: 110px;
+  padding: 11px 20px;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: var(--radius-sm);
+  background: rgba(99, 102, 241, 0.08);
+  color: #818cf8;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.browse-btn:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.5);
+  transform: translateY(-1px);
+}
+
 .start-btn {
-  width: 100%;
-  padding: 12px 20px;
+  flex: 1;
+  padding: 11px 20px;
   border: none;
   border-radius: var(--radius-sm);
   background: var(--gradient-primary);
   color: #fff;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   transition: all 0.3s ease;
   font-family: inherit;
 }
