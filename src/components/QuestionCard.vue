@@ -359,10 +359,7 @@ function isFillCorrect(index: number): boolean {
 
 watch(() => props.question, (q) => {
   if (props.savedAnswer !== undefined) {
-    // 排序题不在恢复时设置 answered，只有确认后才算已回答
-    if (q.type !== 'order') {
-      answered.value = true
-    }
+    answered.value = true
     restoreSavedAnswer(q.type, props.savedAnswer)
   } else {
     resetAnswers()

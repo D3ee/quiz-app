@@ -471,4 +471,26 @@ async function handleSubmit() {
 .action-home:hover { border-color: var(--border-glow); color: var(--text-primary); }
 .action-retry { background: var(--gradient-primary); border: none; color: #fff; }
 .action-retry:hover { box-shadow: 0 4px 16px rgba(99,102,241,0.3); }
+
+/* Scratch Toggle */
+.scratch-toggle {
+  padding: 8px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+}
+.scratch-toggle:hover {
+  border-color: var(--border-glow);
+  transform: scale(1.1);
+}
+.scratch-toggle.active {
+  border-color: var(--accent-amber);
+  background: rgba(251, 191, 36, 0.1);
+  color: var(--accent-amber);
+}
 </style>

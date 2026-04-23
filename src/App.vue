@@ -41,6 +41,7 @@
   --accent-emerald: #34d399;                                      /* 翡翠绿强调色 */
   --accent-rose: #fb7185;                                         /* 玫红强调色 */
   --accent-amber: #fbbf24;                                        /* 琥珀黄强调色 */
+  --accent-violet: #a78bfa;                                       /* 紫罗兰强调色 */
   --gradient-primary: linear-gradient(135deg, #818cf8, #22d3ee);  /* 主渐变（靛蓝→青色） */
   --gradient-success: linear-gradient(135deg, #34d399, #22d3ee);  /* 成功渐变（绿→青） */
   --gradient-danger: linear-gradient(135deg, #fb7185, #f472b6);   /* 危险渐变（红→粉） */
