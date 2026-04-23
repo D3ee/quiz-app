@@ -181,21 +181,20 @@
       <!-- ===== 排序题 ===== -->
       <template v-else-if="question.type === 'order'">
         <div class="order-items">
-          <div class="order-hint">请将选项拖拽到正确的顺序：</div>
-          <div
-            v-for="(idx, pos) in orderAnswer"
-            :key="idx"
-            class="order-item"
-            :class="{ 'order-correct': answered && isOrderCorrect(pos), 'order-wrong': answered && !isOrderCorrect(pos) }"
-            :draggable="!answered"
-            @dragstart="onDragStart(pos)"
-            @dragover.prevent
-            @drop="onDrop(pos)"
-          >
-            <span class="order-number">{{ pos + 1 }}</span>
-            <span class="order-text">{{ question.options![idx] }}</span>
-            <span v-if="!answered" class="drag-handle">⋮⋮</span>
+          <div class="order-hint">请输入正确的顺序（例如：1324）</div>
+          <div class="order-options">
+            <div v-for="(option, idx) in question.options" :key="idx" class="order-option">
+              <span class="option-number">{{ idx + 1 }}.</span>
+              <span class="option-text">{{ option }}</span>
+            </div>
           </div>
+          <input
+            v-model="orderInput"
+            :disabled="answered"
+            class="order-input"
+            placeholder="输入顺序，如：1324"
+            maxlength="10"
+          />
           <button
             v-if="!answered"
             class="confirm-btn"
@@ -254,8 +253,7 @@ const judgeAnswer = ref<boolean | undefined>(undefined)    // 判断题用户选
 const fillAnswers = ref<string[]>([])                      // 填空题答案数组
 const textAnswer = ref('')                                 // 简答题答案
 const codeAnswer = ref('')                                 // 代码题答案
-const orderAnswer = ref<number[]>([])                      // 排序题答案（选项索引数组）
-const draggedIndex = ref<number | null>(null)              // 拖拽中的项索引
+const orderInput = ref('')                                 // 排序题输入（如：1324）
 const answered = ref(false)                                // 是否已提交答案
 
 const { renderQuestion } = useQuestionRenderer()
@@ -310,7 +308,7 @@ const isCorrect = computed(() => {
     case 'code':
       return quizStore.isAnswerCorrect(q, q.type === 'short' ? textAnswer.value : codeAnswer.value)
     case 'order':
-      return quizStore.isAnswerCorrect(q, orderAnswer.value)
+      return quizStore.isAnswerCorrect(q, orderInput.value.trim().split('').map(n => parseInt(n) - 1).filter(n => !isNaN(n)))
     default:
       return false
   }
@@ -356,15 +354,12 @@ function isFillCorrect(index: number): boolean {
   return fillAnswers.value[index]?.trim().toLowerCase() === correctAnswers[index]?.trim().toLowerCase()
 }
 
-function isOrderCorrect(pos: number): boolean {
-  if (!answered.value) return false
-  const correctOrder = props.question.answer as number[]
-  return orderAnswer.value[pos] === correctOrder[pos]
-}
-
 watch(() => props.question, (q) => {
   if (props.savedAnswer !== undefined) {
-    answered.value = true
+    // 排序题不在恢复时设置 answered，只有确认后才算已回答
+    if (q.type !== 'order') {
+      answered.value = true
+    }
     restoreSavedAnswer(q.type, props.savedAnswer)
   } else {
     resetAnswers()
@@ -392,7 +387,7 @@ function restoreSavedAnswer(type: string, saved: any) {
       codeAnswer.value = saved as string
       break
     case 'order':
-      orderAnswer.value = [...(saved as number[])]
+      orderInput.value = (saved as number[]).map(i => i + 1).join('')
       break
   }
 }
@@ -405,7 +400,7 @@ function resetAnswers() {
   fillAnswers.value = Array(props.question.blanks || 1).fill('')
   textAnswer.value = ''
   codeAnswer.value = props.question.codeTemplate || ''
-  orderAnswer.value = props.question.options ? props.question.options.map((_, i) => i) : []
+  orderInput.value = ''
 }
 
 function onSingleSelect(val: number) {
@@ -451,21 +446,9 @@ function onCodeConfirm() {
 }
 
 function onOrderConfirm() {
+  const order = orderInput.value.trim().split('').map(n => parseInt(n) - 1).filter(n => !isNaN(n))
   answered.value = true
-  emit('answer', props.question.id, [...orderAnswer.value])
-}
-
-function onDragStart(index: number) {
-  draggedIndex.value = index
-}
-
-function onDrop(targetIndex: number) {
-  if (draggedIndex.value === null) return
-  const newOrder = [...orderAnswer.value]
-  const [removed] = newOrder.splice(draggedIndex.value, 1)
-  newOrder.splice(targetIndex, 0, removed)
-  orderAnswer.value = newOrder
-  draggedIndex.value = null
+  emit('answer', props.question.id, order)
 }
 </script>
 
@@ -960,67 +943,55 @@ function onDrop(targetIndex: number) {
 .order-items {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 .order-hint {
   font-size: 13px;
   color: var(--text-muted);
   margin-bottom: 4px;
 }
-.order-item {
+.order-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.order-option {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: rgba(17, 24, 39, 0.3);
+}
+.option-number {
+  color: var(--accent-indigo);
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.option-text {
+  color: var(--text-primary);
+  font-size: 14px;
+}
+.order-input {
+  width: 100%;
   padding: 12px 14px;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   background: rgba(17, 24, 39, 0.5);
-  cursor: move;
+  color: var(--text-primary);
+  font-size: 14px;
   transition: all 0.2s;
 }
-.order-item:hover {
-  border-color: var(--border-glow);
-  background: rgba(99, 102, 241, 0.06);
+.order-input:focus {
+  outline: none;
+  border-color: var(--accent-indigo);
+  background: rgba(17, 24, 39, 0.7);
 }
-.order-item.order-correct {
-  border-color: var(--accent-emerald);
-  background: rgba(52, 211, 153, 0.08);
-  cursor: default;
-}
-.order-item.order-wrong {
-  border-color: var(--accent-rose);
-  background: rgba(251, 113, 133, 0.08);
-  cursor: default;
-}
-.order-number {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(99, 102, 241, 0.1);
-  color: var(--accent-indigo);
-  font-weight: 700;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.order-correct .order-number {
-  background: rgba(52, 211, 153, 0.15);
-  color: var(--accent-emerald);
-}
-.order-wrong .order-number {
-  background: rgba(251, 113, 133, 0.15);
-  color: var(--accent-rose);
-}
-.order-text {
-  flex: 1;
-  font-size: 14px;
-  color: var(--text-primary);
-}
-.drag-handle {
-  color: var(--text-muted);
-  font-size: 16px;
-  cursor: move;
+.order-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>
