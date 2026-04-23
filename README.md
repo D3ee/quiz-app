@@ -1,10 +1,10 @@
 # 前端知识答题系统
 
-一个基于 Vue 3 + TypeScript + Element Plus 的在线答题应用，支持 JavaScript、Vue2、Vue3 三个分类的题目练习。
+一个基于 Vue 3 + TypeScript + Element Plus 的在线答题应用，支持 JavaScript、Vue2、Vue3、小程序四个分类的题目练习。
 
 ## 功能特性
 
-- 📝 **多分类题库** - JavaScript、Vue2、Vue3 三大技术栈题目
+- 📝 **多分类题库** - JavaScript、Vue2、Vue3、小程序四大技术栈题目，共 320 道题
 - 🎲 **智能随机** - 题目随机抽取，避免重复，题库抽完自动重置
 - 💾 **答题记录** - 自动保存答题进度，刷新页面不丢失
 - 📊 **详细解析** - 每道题提供正确答案和详细解释
@@ -54,9 +54,10 @@ src/
 │   ├── useQuestionRenderer.ts  # 题目渲染逻辑
 │   └── useScoreCalculation.ts  # 分数计算逻辑
 ├── data/               # 题库数据
-│   ├── javascript.ts
-│   ├── vue2.ts
-│   └── vue3.ts
+│   ├── javascript.ts   # JavaScript 题库（80 题）
+│   ├── vue2.ts         # Vue2 题库（80 题）
+│   ├── vue3.ts         # Vue3 题库（80 题）
+│   └── miniprogram.ts  # 小程序题库（80 题）
 ├── router/             # 路由配置
 │   └── index.ts
 ├── stores/             # Pinia 状态管理
