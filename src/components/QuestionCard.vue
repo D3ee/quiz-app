@@ -41,11 +41,12 @@
             !answered && singleAnswer === i ? 'option-selected' : '',
             answered ? optionClass(i) : '',
             answered ? 'option-locked' : 'option-hoverable',
+            !answered && props.scratchMode ? 'scratch-hidden' : '',
           ]"
           @click="!answered && onSingleSelect(i)"
         >
           <span class="option-letter">{{ labels[i] }}</span>
-          <span class="option-text">{{ opt }}</span>
+          <span class="option-text" :class="{ 'scratch-text': !answered && props.scratchMode }">{{ opt }}</span>
           <span v-if="answered && isAnswerIndex(i)" class="option-tag tag-correct">正确</span>
           <span v-if="answered && isWrongSelect(i)" class="option-tag tag-wrong">你选</span>
           <span v-if="answered && isCorrectSelect(i)" class="option-tag tag-right">你选</span>
@@ -62,6 +63,7 @@
             !answered && multiAnswer.includes(i) ? 'option-selected' : '',
             answered ? optionClass(i) : '',
             answered ? 'option-locked' : 'option-hoverable',
+            !answered && props.scratchMode ? 'scratch-hidden' : '',
           ]"
           @click="!answered && onMultiToggle(i)"
         >
@@ -70,7 +72,7 @@
               <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span>
-          <span class="option-text">{{ opt }}</span>
+          <span class="option-text" :class="{ 'scratch-text': !answered && props.scratchMode }">{{ opt }}</span>
           <span v-if="answered && isAnswerIndex(i)" class="option-tag tag-correct">正确</span>
           <span v-if="answered && isWrongSelect(i)" class="option-tag tag-wrong">你选</span>
           <span v-if="answered && isCorrectSelect(i)" class="option-tag tag-right">你选</span>
@@ -237,6 +239,7 @@ const props = defineProps<{
   index: number                   // 当前题目索引（从0开始）
   total: number                   // 总题数
   savedAnswer?: number | number[] | boolean | string | string[] // 已保存的答案（用于切题时回显）
+  scratchMode?: boolean           // 刮刮乐模式
 }>()
 
 /** 组件事件 */
@@ -993,5 +996,17 @@ function onOrderConfirm() {
 .order-input:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* 刮刮乐模式样式 */
+.scratch-hidden .scratch-text {
+  color: transparent;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
+  user-select: none;
+  transition: all 0.3s ease;
+}
+.scratch-hidden:hover .scratch-text {
+  color: var(--text-primary);
+  background: transparent;
 }
 </style>

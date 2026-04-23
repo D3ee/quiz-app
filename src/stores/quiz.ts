@@ -61,6 +61,7 @@ export const useQuizStore = defineStore('quiz', () => {
   const timeLimitPerQuestion = ref(30)                  // 限时模式 - 每题限时（秒）
   const challengeFailed = ref(false)                    // 闯关模式 - 是否已失败（答错即止）
   const challengeStreak = ref(0)                        // 闯关模式 - 连续答对题数
+  const scratchMode = ref(false)                        // 刮刮乐模式 - 隐藏选项内容
 
   // ==================== 持久化数据 ====================
   const wrongRecords = ref<WrongRecord[]>([])           // 错题本记录
@@ -363,7 +364,7 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
     // 状态
     currentCategory, currentIndex, userAnswers, submitted,
     questions, currentQuestion, total, score, usedQuestionIds, startTime, endTime,
-    currentMode, timeLimitPerQuestion, challengeFailed, challengeStreak,
+    currentMode, timeLimitPerQuestion, challengeFailed, challengeStreak, scratchMode,
     wrongRecords, quizHistory, favoriteIds,
     // 方法
     startQuiz, startWrongQuiz, setAnswer, nextQuestion, prevQuestion, submit,
@@ -378,7 +379,7 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
       'usedQuestionIds', 'currentCategory', 'currentIndex', 'questions',
       'userAnswers', 'submitted', 'startTime', 'endTime', 'currentMode',
       'wrongRecords', 'quizHistory', 'favoriteIds',
-      'challengeFailed', 'challengeStreak',
+      'challengeFailed', 'challengeStreak', 'scratchMode',
     ],
   },
 })

@@ -29,6 +29,10 @@
       </div>
       <!-- 右侧计时器：显示已用时间 -->
       <div class="timer">⏱ {{ timeElapsed }}</div>
+      <!-- 刮刮乐模式开关 -->
+      <button class="scratch-toggle" :class="{ active: store.scratchMode }" @click="store.scratchMode = !store.scratchMode" title="刮刮乐模式">
+        🎭
+      </button>
     </div>
 
     <!-- 核心答题区：渲染当前题目，插槽中放置收藏按钮 -->
@@ -38,6 +42,7 @@
       :index="currentIndex"
       :total="total"
       :saved-answer="userAnswers[currentQuestion.id]"
+      :scratch-mode="store.scratchMode"
       @answer="onAnswer"
       @multi-select="onAnswer(currentQuestion!.id, $event)"
     >
