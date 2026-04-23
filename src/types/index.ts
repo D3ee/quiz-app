@@ -6,12 +6,14 @@
 /** 题目接口 */
 export interface Question {
   id: string                                    // 题目唯一标识（格式：数字-分类，如 "1-javascript"）
-  type: 'single' | 'multiple'                   // 题型：单选 | 多选
+  type: 'single' | 'multiple' | 'judge' | 'fill' | 'short' | 'code' | 'order'  // 题型
   category: 'javascript' | 'vue2' | 'vue3' | 'miniprogram'      // 所属分类
   question: string                               // 题目文本（支持 Markdown 代码块）
-  options: string[]                              // 选项列表（最多4个）
-  answer: number | number[]                      // 正确答案索引（单选为数字，多选为数组）
+  options?: string[]                             // 选项列表（单选/多选/排序题必需）
+  answer: number | number[] | boolean | string | string[]  // 正确答案（根据题型不同）
   explanation: string                            // 答案解析
+  blanks?: number                                // 填空题：空格数量
+  codeTemplate?: string                          // 代码题：代码模板
 }
 
 /** 题目分类类型 */
@@ -23,14 +25,14 @@ export type QuizMode = 'random' | 'timed' | 'challenge' | 'sequential'
 /** 用户作答记录 */
 export interface UserAnswer {
   questionId: string                             // 题目ID
-  answer: number | number[]                      // 用户选择的答案索引
+  answer: number | number[] | boolean | string | string[]  // 用户答案（根据题型不同）
 }
 
 /** 错题记录 */
 export interface WrongRecord {
   questionId: string                             // 题目ID
   category: Category                             // 所属分类
-  userAnswer: number | number[]                  // 用户的错误答案
+  userAnswer: number | number[] | boolean | string | string[]  // 用户的错误答案
   wrongCount: number                             // 累计答错次数
   lastWrongTime: number                          // 最近一次答错的时间戳
 }

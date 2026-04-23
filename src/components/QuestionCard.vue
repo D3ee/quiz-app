@@ -3,6 +3,10 @@
   核心答题交互组件，支持：
   - 单选题：点击选项即提交答案
   - 多选题：勾选多个选项后点击"确认选择"提交
+  - 判断题：点击对/错按钮提交
+  - 填空题：输入答案后点击提交
+  - 简答题/代码题：输入答案后点击提交
+  - 排序题：拖拽排序后点击提交
   - 答题后显示正确/错误反馈和解析
   - 支持已保存答案的回显（切题时恢复状态）
   - 通过插槽 #header-extra 扩展头部（如收藏按钮）
@@ -11,8 +15,8 @@
   <div class="question-card">
     <!-- 题目头部：题型标签 + 题号 + 答题结果 + 扩展插槽 -->
     <div class="question-header">
-      <span class="type-badge" :class="question.type === 'single' ? 'badge-single' : 'badge-multi'">
-        {{ question.type === 'single' ? '单选' : '多选' }}
+      <span class="type-badge" :class="typeBadgeClass">
+        {{ typeLabel }}
       </span>
       <span class="question-index">第 {{ index + 1 }} / {{ total }} 题</span>
       <span v-if="answered" class="result-badge" :class="isCorrect ? 'badge-correct' : 'badge-wrong'">
@@ -25,7 +29,7 @@
     <!-- 题目文本（支持代码高亮渲染） -->
     <div class="question-text" v-html="renderedQuestion"></div>
 
-    <!-- 选项区域 -->
+    <!-- 选项/答题区域 -->
     <div class="options">
       <!-- ===== 单选题选项 ===== -->
       <template v-if="question.type === 'single'">
@@ -47,8 +51,9 @@
           <span v-if="answered && isCorrectSelect(i)" class="option-tag tag-right">你选</span>
         </div>
       </template>
+
       <!-- ===== 多选题选项 ===== -->
-      <template v-else>
+      <template v-else-if="question.type === 'multiple'">
         <div
           v-for="(opt, i) in question.options"
           :key="i"
@@ -60,7 +65,6 @@
           ]"
           @click="!answered && onMultiToggle(i)"
         >
-          <!-- 多选复选框图标 -->
           <span class="option-check" :class="{ checked: multiAnswer.includes(i) }">
             <svg v-if="multiAnswer.includes(i)" width="12" height="12" viewBox="0 0 12 12" fill="none">
               <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -71,7 +75,6 @@
           <span v-if="answered && isWrongSelect(i)" class="option-tag tag-wrong">你选</span>
           <span v-if="answered && isCorrectSelect(i)" class="option-tag tag-right">你选</span>
         </div>
-        <!-- 多选确认按钮（至少选择一个选项后显示） -->
         <button
           v-if="!answered && multiAnswer.length > 0"
           class="confirm-btn"
@@ -79,6 +82,128 @@
         >
           确认选择 ({{ multiAnswer.length }})
         </button>
+      </template>
+
+      <!-- ===== 判断题 ===== -->
+      <template v-else-if="question.type === 'judge'">
+        <div class="judge-buttons">
+          <button
+            class="judge-btn"
+            :class="{ 'judge-selected': judgeAnswer === true, 'judge-correct': answered && question.answer === true, 'judge-wrong': answered && judgeAnswer === true && question.answer !== true }"
+            :disabled="answered"
+            @click="!answered && onJudgeSelect(true)"
+          >
+            <span class="judge-icon">✓</span>
+            <span>正确</span>
+          </button>
+          <button
+            class="judge-btn"
+            :class="{ 'judge-selected': judgeAnswer === false, 'judge-correct': answered && question.answer === false, 'judge-wrong': answered && judgeAnswer === false && question.answer !== false }"
+            :disabled="answered"
+            @click="!answered && onJudgeSelect(false)"
+          >
+            <span class="judge-icon">✗</span>
+            <span>错误</span>
+          </button>
+        </div>
+      </template>
+
+      <!-- ===== 填空题 ===== -->
+      <template v-else-if="question.type === 'fill'">
+        <div class="fill-inputs">
+          <div v-for="i in (question.blanks || 1)" :key="i" class="fill-item">
+            <label class="fill-label">空格 {{ i }}：</label>
+            <input
+              v-model="fillAnswers[i - 1]"
+              type="text"
+              class="fill-input"
+              :class="{ 'input-correct': answered && isFillCorrect(i - 1), 'input-wrong': answered && !isFillCorrect(i - 1) }"
+              :disabled="answered"
+              :placeholder="`请输入第 ${i} 个答案`"
+            />
+          </div>
+          <button
+            v-if="!answered && fillAnswers.some(a => a.trim())"
+            class="confirm-btn"
+            @click="onFillConfirm"
+          >
+            提交答案
+          </button>
+        </div>
+      </template>
+
+      <!-- ===== 简答题 ===== -->
+      <template v-else-if="question.type === 'short'">
+        <div class="text-answer">
+          <textarea
+            v-model="textAnswer"
+            class="text-input"
+            :class="{ 'input-correct': answered && isCorrect, 'input-wrong': answered && !isCorrect }"
+            :disabled="answered"
+            placeholder="请输入你的答案..."
+            rows="4"
+          ></textarea>
+          <button
+            v-if="!answered && textAnswer.trim()"
+            class="confirm-btn"
+            @click="onTextConfirm"
+          >
+            提交答案
+          </button>
+        </div>
+      </template>
+
+      <!-- ===== 代码题 ===== -->
+      <template v-else-if="question.type === 'code'">
+        <div class="code-answer">
+          <div v-if="question.codeTemplate" class="code-template">
+            <div class="template-label">代码模板：</div>
+            <pre><code>{{ question.codeTemplate }}</code></pre>
+          </div>
+          <textarea
+            v-model="codeAnswer"
+            class="code-input"
+            :class="{ 'input-correct': answered && isCorrect, 'input-wrong': answered && !isCorrect }"
+            :disabled="answered"
+            placeholder="请输入你的代码..."
+            rows="8"
+          ></textarea>
+          <button
+            v-if="!answered && codeAnswer.trim()"
+            class="confirm-btn"
+            @click="onCodeConfirm"
+          >
+            提交代码
+          </button>
+        </div>
+      </template>
+
+      <!-- ===== 排序题 ===== -->
+      <template v-else-if="question.type === 'order'">
+        <div class="order-items">
+          <div class="order-hint">请将选项拖拽到正确的顺序：</div>
+          <div
+            v-for="(idx, pos) in orderAnswer"
+            :key="idx"
+            class="order-item"
+            :class="{ 'order-correct': answered && isOrderCorrect(pos), 'order-wrong': answered && !isOrderCorrect(pos) }"
+            :draggable="!answered"
+            @dragstart="onDragStart(pos)"
+            @dragover.prevent
+            @drop="onDrop(pos)"
+          >
+            <span class="order-number">{{ pos + 1 }}</span>
+            <span class="order-text">{{ question.options![idx] }}</span>
+            <span v-if="!answered" class="drag-handle">⋮⋮</span>
+          </div>
+          <button
+            v-if="!answered"
+            class="confirm-btn"
+            @click="onOrderConfirm"
+          >
+            提交排序
+          </button>
+        </div>
       </template>
     </div>
 
@@ -105,24 +230,32 @@
 import { ref, watch, computed } from 'vue'
 import type { Question } from '../types'
 import { useQuestionRenderer } from '../composables/useQuestionRenderer'
+import { useQuizStore } from '../stores/quiz'
 
 /** 组件 Props */
 const props = defineProps<{
   question: Question              // 当前题目数据
   index: number                   // 当前题目索引（从0开始）
   total: number                   // 总题数
-  savedAnswer?: number | number[] // 已保存的答案（用于切题时回显）
+  savedAnswer?: number | number[] | boolean | string | string[] // 已保存的答案（用于切题时回显）
 }>()
 
 /** 组件事件 */
 const emit = defineEmits<{
-  answer: [questionId: number, answer: number | number[]]  // 提交答案事件
+  answer: [questionId: string, answer: number | number[] | boolean | string | string[]]  // 提交答案事件
   'multi-select': [selections: number[]]                   // 多选选项变化事件（实时同步）
 }>()
 
+const quizStore = useQuizStore()
 const labels = ['A', 'B', 'C', 'D']                       // 选项字母标签
 const singleAnswer = ref<number | undefined>(undefined)    // 单选题用户选择
 const multiAnswer = ref<number[]>([])                      // 多选题用户选择列表
+const judgeAnswer = ref<boolean | undefined>(undefined)    // 判断题用户选择
+const fillAnswers = ref<string[]>([])                      // 填空题答案数组
+const textAnswer = ref('')                                 // 简答题答案
+const codeAnswer = ref('')                                 // 代码题答案
+const orderAnswer = ref<number[]>([])                      // 排序题答案（选项索引数组）
+const draggedIndex = ref<number | null>(null)              // 拖拽中的项索引
 const answered = ref(false)                                // 是否已提交答案
 
 const { renderQuestion } = useQuestionRenderer()
@@ -130,19 +263,68 @@ const { renderQuestion } = useQuestionRenderer()
 /** 渲染题目文本为 HTML */
 const renderedQuestion = computed(() => renderQuestion(props.question.question))
 
+/** 题型标签文本 */
+const typeLabel = computed(() => {
+  const typeMap = {
+    single: '单选',
+    multiple: '多选',
+    judge: '判断',
+    fill: '填空',
+    short: '简答',
+    code: '代码',
+    order: '排序'
+  }
+  return typeMap[props.question.type] || '未知'
+})
+
+/** 题型标签样式类 */
+const typeBadgeClass = computed(() => {
+  const classMap = {
+    single: 'badge-single',
+    multiple: 'badge-multi',
+    judge: 'badge-judge',
+    fill: 'badge-fill',
+    short: 'badge-short',
+    code: 'badge-code',
+    order: 'badge-order'
+  }
+  return classMap[props.question.type] || ''
+})
+
 /** 判断当前回答是否正确 */
 const isCorrect = computed(() => {
   if (!answered.value) return false
   const q = props.question
-  if (q.type === 'single') return singleAnswer.value === q.answer
-  const ans = q.answer as number[]
-  return ans.length === multiAnswer.value.length && ans.every((a) => multiAnswer.value.includes(a))
+  
+  switch (q.type) {
+    case 'single':
+      return singleAnswer.value === q.answer
+    case 'multiple':
+      const ans = q.answer as number[]
+      return ans.length === multiAnswer.value.length && ans.every((a) => multiAnswer.value.includes(a))
+    case 'judge':
+      return judgeAnswer.value === q.answer
+    case 'fill':
+      return quizStore.isAnswerCorrect(q, fillAnswers.value)
+    case 'short':
+    case 'code':
+      return quizStore.isAnswerCorrect(q, q.type === 'short' ? textAnswer.value : codeAnswer.value)
+    case 'order':
+      return quizStore.isAnswerCorrect(q, orderAnswer.value)
+    default:
+      return false
+  }
 })
 
 const correctAnswerText = computed(() => {
   const q = props.question
   if (q.type === 'single') return labels[q.answer as number]
-  return (q.answer as number[]).map((i) => labels[i]).join('、')
+  if (q.type === 'multiple') return (q.answer as number[]).map((i) => labels[i]).join('、')
+  if (q.type === 'judge') return q.answer ? '正确' : '错误'
+  if (q.type === 'fill') return (q.answer as string[]).join('、')
+  if (q.type === 'short' || q.type === 'code') return q.answer as string
+  if (q.type === 'order') return (q.answer as number[]).map(i => labels[i]).join(' → ')
+  return ''
 })
 
 function isAnswerIndex(i: number): boolean {
@@ -168,20 +350,63 @@ function optionClass(i: number) {
   return ''
 }
 
+function isFillCorrect(index: number): boolean {
+  if (!answered.value) return false
+  const correctAnswers = props.question.answer as string[]
+  return fillAnswers.value[index]?.trim().toLowerCase() === correctAnswers[index]?.trim().toLowerCase()
+}
+
+function isOrderCorrect(pos: number): boolean {
+  if (!answered.value) return false
+  const correctOrder = props.question.answer as number[]
+  return orderAnswer.value[pos] === correctOrder[pos]
+}
+
 watch(() => props.question, (q) => {
   if (props.savedAnswer !== undefined) {
     answered.value = true
-    if (q.type === 'single') {
-      singleAnswer.value = props.savedAnswer as number
-    } else {
-      multiAnswer.value = [...(props.savedAnswer as number[])]
-    }
+    restoreSavedAnswer(q.type, props.savedAnswer)
   } else {
-    answered.value = false
-    singleAnswer.value = undefined
-    multiAnswer.value = []
+    resetAnswers()
   }
 }, { immediate: true })
+
+function restoreSavedAnswer(type: string, saved: any) {
+  switch (type) {
+    case 'single':
+      singleAnswer.value = saved as number
+      break
+    case 'multiple':
+      multiAnswer.value = [...(saved as number[])]
+      break
+    case 'judge':
+      judgeAnswer.value = saved as boolean
+      break
+    case 'fill':
+      fillAnswers.value = [...(saved as string[])]
+      break
+    case 'short':
+      textAnswer.value = saved as string
+      break
+    case 'code':
+      codeAnswer.value = saved as string
+      break
+    case 'order':
+      orderAnswer.value = [...(saved as number[])]
+      break
+  }
+}
+
+function resetAnswers() {
+  answered.value = false
+  singleAnswer.value = undefined
+  multiAnswer.value = []
+  judgeAnswer.value = undefined
+  fillAnswers.value = Array(props.question.blanks || 1).fill('')
+  textAnswer.value = ''
+  codeAnswer.value = props.question.codeTemplate || ''
+  orderAnswer.value = props.question.options ? props.question.options.map((_, i) => i) : []
+}
 
 function onSingleSelect(val: number) {
   singleAnswer.value = val
@@ -202,6 +427,45 @@ function onMultiToggle(val: number) {
 function onMultiConfirm() {
   answered.value = true
   emit('answer', props.question.id, [...multiAnswer.value])
+}
+
+function onJudgeSelect(val: boolean) {
+  judgeAnswer.value = val
+  answered.value = true
+  emit('answer', props.question.id, val)
+}
+
+function onFillConfirm() {
+  answered.value = true
+  emit('answer', props.question.id, [...fillAnswers.value])
+}
+
+function onTextConfirm() {
+  answered.value = true
+  emit('answer', props.question.id, textAnswer.value)
+}
+
+function onCodeConfirm() {
+  answered.value = true
+  emit('answer', props.question.id, codeAnswer.value)
+}
+
+function onOrderConfirm() {
+  answered.value = true
+  emit('answer', props.question.id, [...orderAnswer.value])
+}
+
+function onDragStart(index: number) {
+  draggedIndex.value = index
+}
+
+function onDrop(targetIndex: number) {
+  if (draggedIndex.value === null) return
+  const newOrder = [...orderAnswer.value]
+  const [removed] = newOrder.splice(draggedIndex.value, 1)
+  newOrder.splice(targetIndex, 0, removed)
+  orderAnswer.value = newOrder
+  draggedIndex.value = null
 }
 </script>
 
@@ -240,6 +504,26 @@ function onMultiConfirm() {
 .badge-multi {
   background: rgba(251, 191, 36, 0.12);
   color: var(--accent-amber);
+}
+.badge-judge {
+  background: rgba(168, 85, 247, 0.12);
+  color: #a855f7;
+}
+.badge-fill {
+  background: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+}
+.badge-short {
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+}
+.badge-code {
+  background: rgba(236, 72, 153, 0.12);
+  color: #ec4899;
+}
+.badge-order {
+  background: rgba(20, 184, 166, 0.12);
+  color: #14b8a6;
 }
 .badge-correct {
   background: rgba(52, 211, 153, 0.12);
@@ -483,5 +767,260 @@ function onMultiConfirm() {
   font-size: 14px;
   line-height: 1.7;
   color: var(--text-secondary);
+}
+
+/* 判断题样式 */
+.judge-buttons {
+  display: flex;
+  gap: 16px;
+}
+.judge-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: rgba(17, 24, 39, 0.5);
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.judge-btn:not(:disabled):hover {
+  border-color: var(--border-glow);
+  background: rgba(99, 102, 241, 0.06);
+}
+.judge-btn:disabled {
+  cursor: default;
+}
+.judge-btn.judge-selected {
+  border-color: var(--accent-indigo);
+  background: rgba(99, 102, 241, 0.08);
+}
+.judge-btn.judge-correct {
+  border-color: var(--accent-emerald) !important;
+  background: rgba(52, 211, 153, 0.08) !important;
+}
+.judge-btn.judge-wrong {
+  border-color: var(--accent-rose) !important;
+  background: rgba(251, 113, 133, 0.08) !important;
+}
+.judge-icon {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* 填空题样式 */
+.fill-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.fill-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.fill-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 80px;
+}
+.fill-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: rgba(17, 24, 39, 0.5);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.fill-input:focus {
+  outline: none;
+  border-color: var(--accent-indigo);
+  background: rgba(99, 102, 241, 0.06);
+}
+.fill-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.fill-input.input-correct {
+  border-color: var(--accent-emerald);
+  background: rgba(52, 211, 153, 0.06);
+}
+.fill-input.input-wrong {
+  border-color: var(--accent-rose);
+  background: rgba(251, 113, 133, 0.06);
+}
+
+/* 简答题样式 */
+.text-answer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.text-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: rgba(17, 24, 39, 0.5);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  transition: all 0.2s;
+}
+.text-input:focus {
+  outline: none;
+  border-color: var(--accent-indigo);
+  background: rgba(99, 102, 241, 0.06);
+}
+.text-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.text-input.input-correct {
+  border-color: var(--accent-emerald);
+  background: rgba(52, 211, 153, 0.06);
+}
+.text-input.input-wrong {
+  border-color: var(--accent-rose);
+  background: rgba(251, 113, 133, 0.06);
+}
+
+/* 代码题样式 */
+.code-answer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.code-template {
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-subtle);
+}
+.template-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-indigo);
+  margin-bottom: 8px;
+}
+.code-template pre {
+  margin: 0;
+  overflow-x: auto;
+}
+.code-template code {
+  font-family: 'Fira Code', Consolas, monospace;
+  font-size: 13px;
+  color: var(--accent-cyan);
+}
+.code-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: rgba(17, 24, 39, 0.5);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: 'Fira Code', Consolas, monospace;
+  line-height: 1.6;
+  resize: vertical;
+  transition: all 0.2s;
+}
+.code-input:focus {
+  outline: none;
+  border-color: var(--accent-indigo);
+  background: rgba(99, 102, 241, 0.06);
+}
+.code-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.code-input.input-correct {
+  border-color: var(--accent-emerald);
+  background: rgba(52, 211, 153, 0.06);
+}
+.code-input.input-wrong {
+  border-color: var(--accent-rose);
+  background: rgba(251, 113, 133, 0.06);
+}
+
+/* 排序题样式 */
+.order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.order-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: rgba(17, 24, 39, 0.5);
+  cursor: move;
+  transition: all 0.2s;
+}
+.order-item:hover {
+  border-color: var(--border-glow);
+  background: rgba(99, 102, 241, 0.06);
+}
+.order-item.order-correct {
+  border-color: var(--accent-emerald);
+  background: rgba(52, 211, 153, 0.08);
+  cursor: default;
+}
+.order-item.order-wrong {
+  border-color: var(--accent-rose);
+  background: rgba(251, 113, 133, 0.08);
+  cursor: default;
+}
+.order-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--accent-indigo);
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.order-correct .order-number {
+  background: rgba(52, 211, 153, 0.15);
+  color: var(--accent-emerald);
+}
+.order-wrong .order-number {
+  background: rgba(251, 113, 133, 0.15);
+  color: var(--accent-rose);
+}
+.order-text {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.drag-handle {
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: move;
 }
 </style>

@@ -199,6 +199,7 @@ const categoryNames: Record<Category, string> = {
   javascript: 'JavaScript',
   vue2: 'Vue 2',
   vue3: 'Vue 3',
+  miniprogram: '小程序',
 }
 
 const category = route.params.category as Category
@@ -209,21 +210,14 @@ if (!store.questions.length || store.currentCategory !== category) {
 const categoryName = computed(() => categoryNames[store.currentCategory])
 
 /** 处理用户提交答案，闯关模式下额外判断对错 */
-function onAnswer(questionId: number, answer: number | number[]) {
+function onAnswer(questionId: string, answer: number | number[] | boolean | string | string[]) {
   store.setAnswer(questionId, answer)
 
   // 闯关模式：判断对错
   if (store.currentMode === 'challenge') {
     const q = store.questions.find(q => q.id === questionId)
     if (q) {
-      let correct = false
-      if (q.type === 'single') {
-        correct = answer === q.answer
-      } else {
-        const ans = q.answer as number[]
-        const user = answer as number[]
-        correct = ans.length === user.length && ans.every(a => user.includes(a))
-      }
+      const correct = store.isAnswerCorrect(q, answer)
       if (correct) {
         store.challengeStreak++
       } else {

@@ -15,14 +15,14 @@
       <span class="result-badge" :class="isCorrect ? 'badge-correct' : 'badge-wrong'">
         {{ isCorrect ? '正确' : '错误' }}
       </span>
-      <span class="type-badge" :class="question.type === 'single' ? 'badge-single' : 'badge-multi'">
-        {{ question.type === 'single' ? '单选' : '多选' }}
+      <span class="type-badge" :class="typeBadgeClass">
+        {{ typeLabel }}
       </span>
     </div>
     <!-- 题目文本（v-html 渲染 Markdown 代码块） -->
     <div class="q-text" v-html="renderedQuestion"></div>
-    <!-- 选项列表：标注正确答案和用户选择 -->
-    <div class="options-review">
+    <!-- 选项列表：标注正确答案和用户选择（仅单选/多选/排序题） -->
+    <div v-if="question.options" class="options-review">
       <div 
         v-for="(opt, oi) in question.options" 
         :key="oi" 
@@ -68,6 +68,28 @@ const { renderQuestion } = useQuestionRenderer()
 
 /** 将题目文本渲染为 HTML（处理代码块等） */
 const renderedQuestion = computed(() => renderQuestion(props.question.question))
+
+/** 题型标签文本 */
+const typeLabel = computed(() => {
+  const typeMap = { single: '单选', multiple: '多选', judge: '判断', fill: '填空', short: '简答', code: '代码', order: '排序' }
+  return typeMap[props.question.type] || '未知'
+})
+
+/** 题型标签样式类 */
+const typeBadgeClass = computed(() => {
+  const classMap = { single: 'badge-single', multiple: 'badge-multi', judge: 'badge-judge', fill: 'badge-fill', short: 'badge-short', code: 'badge-code', order: 'badge-order' }
+  return classMap[props.question.type] || ''
+})
+
+/** 格式化答案显示 */
+const formattedAnswer = computed(() => {
+  const q = props.question
+  if (q.type === 'judge') return q.answer ? '正确 ✓' : '错误 ✗'
+  if (q.type === 'fill') return (q.answer as string[]).join('、')
+  if (q.type === 'short' || q.type === 'code') return q.answer as string
+  if (q.type === 'order') return (q.answer as number[]).map(i => labels[i]).join(' → ')
+  return String(q.answer)
+})
 </script>
 
 <style scoped>

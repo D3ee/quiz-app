@@ -11,13 +11,14 @@ import { javascriptQuestions } from '../data/javascript'
 import { vue2Questions } from '../data/vue2'
 import { vue3Questions } from '../data/vue3'
 import { miniprogramQuestions } from '../data/miniprogram'
+import { advancedQuestions } from '../data/advanced'
 
 /** 题库池：按分类索引所有题目 */
 const questionPool: Record<Category, Question[]> = {
-  javascript: javascriptQuestions,
-  vue2: vue2Questions,
-  vue3: vue3Questions,
-  miniprogram: miniprogramQuestions,
+  javascript: [...javascriptQuestions, ...advancedQuestions.filter(q => q.category === 'javascript')],
+  vue2: [...vue2Questions, ...advancedQuestions.filter(q => q.category === 'vue2')],
+  vue3: [...vue3Questions, ...advancedQuestions.filter(q => q.category === 'vue3')],
+  miniprogram: [...miniprogramQuestions, ...advancedQuestions.filter(q => q.category === 'miniprogram')],
 }
 
 /** 获取指定分类的题库总数 */
@@ -42,7 +43,7 @@ export const useQuizStore = defineStore('quiz', () => {
   // ==================== 核心答题状态 ====================
   const currentCategory = ref<Category>('javascript')  // 当前答题分类
   const currentIndex = ref(0)                           // 当前题目索引
-  const userAnswers = ref<Record<string, number | number[]>>({}) // 用户作答记录 { 题目ID: 答案 }
+  const userAnswers = ref<Record<string, number | number[] | boolean | string | string[]>>({}) // 用户作答记录 { 题目ID: 答案 }
   const submitted = ref(false)                          // 是否已提交答卷
   const questions = ref<Question[]>([])                 // 当前答题的题目列表
   const startTime = ref(0)                              // 答题开始时间戳
@@ -78,18 +79,45 @@ export const useQuizStore = defineStore('quiz', () => {
     questions.value.forEach((q) => {
       const ua = userAnswers.value[q.id]
       if (ua === undefined) return
-      if (q.type === 'single') {
-        // 单选题：直接比较答案索引
-        if (ua === q.answer) correct++
-      } else {
-        // 多选题：比较数组长度和每个元素是否匹配
-        const ans = q.answer as number[]
-        const user = ua as number[]
-        if (ans.length === user.length && ans.every((a) => user.includes(a))) correct++
-      }
+      if (isAnswerCorrect(q, ua)) correct++
     })
     return correct
   })
+
+  /** 判断答案是否正确 */
+  function isAnswerCorrect(question: Question, userAnswer: any): boolean {
+    switch (question.type) {
+      case 'single':
+        // 单选题：直接比较答案索引
+        return userAnswer === question.answer
+      case 'multiple':
+        // 多选题：比较数组长度和每个元素是否匹配
+        const ans = question.answer as number[]
+        const user = userAnswer as number[]
+        return ans.length === user.length && ans.every((a) => user.includes(a))
+      case 'judge':
+        // 判断题：比较布尔值
+        return userAnswer === question.answer
+      case 'fill':
+        // 填空题：比较字符串数组（忽略大小写和首尾空格）
+        const fillAns = question.answer as string[]
+        const fillUser = userAnswer as string[]
+        return fillAns.length === fillUser.length && 
+               fillAns.every((a, i) => a.trim().toLowerCase() === fillUser[i]?.trim().toLowerCase())
+      case 'short':
+      case 'code':
+        // 简答题和代码题：比较字符串（忽略首尾空格）
+        return (userAnswer as string).trim() === (question.answer as string).trim()
+      case 'order':
+        // 排序题：比较数组顺序
+        const orderAns = question.answer as number[]
+        const orderUser = userAnswer as number[]
+        return orderAns.length === orderUser.length && 
+               orderAns.every((a, i) => a === orderUser[i])
+      default:
+        return false
+    }
+  }
 
   /**
    * 开始答题
@@ -179,8 +207,8 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
   }
 
   /** 记录用户对某题的作答 */
-  function setAnswer(questionId: string, answer: number | number[]) {
-    userAnswers.value[questionId] = answer
+  function setAnswer(questionId: string, answer: number | number[] | boolean | string | string[]) {
+    userAnswers.value[questionId] = answer as any
   }
 
   /** 切换到下一题 */
@@ -211,9 +239,7 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
       const ua = userAnswers.value[q.id]
       if (ua === undefined) return
       // 判断用户答案是否正确
-      const correct = q.type === 'single'
-        ? ua === q.answer
-        : (() => { const ans = q.answer as number[]; const user = ua as number[]; return ans.length === user.length && ans.every(a => user.includes(a)) })()
+      const correct = isAnswerCorrect(q, ua)
       
       if (!correct) {
         // 答错：更新已有错题记录或新增
@@ -340,7 +366,7 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
     startQuiz, startWrongQuiz, setAnswer, nextQuestion, prevQuestion, submit,
     collectWrongAnswers, getWrongCount, clearWrongRecords,
     toggleFavorite, isFavorite, startFavoriteQuiz,
-    challengeFailAt, saveHistory, clearHistory,
+    challengeFailAt, saveHistory, clearHistory, isAnswerCorrect,
   }
 }, {
   // Pinia 持久化配置：指定需要持久化到 localStorage 的字段
