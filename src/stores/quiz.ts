@@ -159,7 +159,8 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
     let availableQuestions = allQuestions.filter(q => !usedIds.has(q.id))
     
     // 如果题库已全部抽完，清空记录重新开始
-    if (availableQuestions.length === 0) {
+    const isReset = availableQuestions.length === 0
+    if (isReset) {
       usedQuestionIds.value[category] = []
       availableQuestions = [...allQuestions]
     }
@@ -169,8 +170,10 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
     const selected = count ? shuffled.slice(0, Math.min(count, shuffled.length)) : shuffled
     questions.value = selected
     
-    // 记录本次抽取的题目ID，下次抽题时排除
-    usedQuestionIds.value[category] = [...usedQuestionIds.value[category], ...selected.map(q => q.id)]
+    // 记录本次抽取的题目ID（重置后直接赋值，否则累加）
+    usedQuestionIds.value[category] = isReset 
+      ? selected.map(q => q.id)
+      : [...usedQuestionIds.value[category], ...selected.map(q => q.id)]
   }
 
   /**
