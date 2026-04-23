@@ -358,11 +358,10 @@ function isFillCorrect(index: number): boolean {
 }
 
 watch(() => props.question, (q) => {
+  resetAnswers()
   if (props.savedAnswer !== undefined) {
     answered.value = true
     restoreSavedAnswer(q.type, props.savedAnswer)
-  } else {
-    resetAnswers()
   }
 }, { immediate: true })
 

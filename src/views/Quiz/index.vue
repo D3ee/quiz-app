@@ -38,6 +38,7 @@
     <!-- 核心答题区：渲染当前题目，插槽中放置收藏按钮 -->
     <QuestionCard
       v-if="currentQuestion"
+      :key="currentQuestion.id"
       :question="currentQuestion"
       :index="currentIndex"
       :total="total"
