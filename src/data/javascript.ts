@@ -2,7 +2,7 @@ import type { Question } from '../types'
 
 export const javascriptQuestions: Question[] = [
   {
-    id: 1,
+    id: '1-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nvar a = 1;\nfunction foo() {\n  console.log(a);\n  var a = 2;\n}\nfoo();\n```',
@@ -11,7 +11,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '由于变量提升（hoisting），函数内部的 var a 会被提升到函数顶部，但赋值不会提升。所以在 console.log(a) 时，a 已声明但未赋值，值为 undefined。',
   },
   {
-    id: 2,
+    id: '2-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下哪个方法不会改变原数组？',
@@ -20,7 +20,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'map() 返回一个新数组，不会修改原数组。push() 添加元素、splice() 删除/插入元素、sort() 原地排序，都会改变原数组。',
   },
   {
-    id: 3,
+    id: '3-javascript',
     type: 'single',
     category: 'javascript',
     question: '关于 Promise，以下说法正确的是？',
@@ -34,7 +34,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'Promise.all() 只要有一个 Promise 被 reject，整个 Promise.all() 就会 reject。Promise 状态一旦改变就不可逆；Promise.race() 返回最先完成的；then() 支持链式调用。',
   },
   {
-    id: 4,
+    id: '4-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nconsole.log(typeof null);\n```',
@@ -43,7 +43,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '这是 JavaScript 的一个历史遗留 bug。typeof null 返回 "object"，因为在 JS 最初的实现中，值以 32 位存储，前 3 位表示类型标签，而 null 的所有位都是 0，与 object 的类型标签相同。',
   },
   {
-    id: 5,
+    id: '5-javascript',
     type: 'multiple',
     category: 'javascript',
     question: '以下哪些是 ES6 新增的特性？（多选）',
@@ -52,7 +52,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'let/const、箭头函数、Promise 都是 ES6(ES2015) 新增的特性。Object.keys() 是 ES5 就有的方法。',
   },
   {
-    id: 6,
+    id: '6-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nfor (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}\n```',
@@ -61,7 +61,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'var 声明的变量没有块级作用域，循环结束后 i 的值为 3。三个 setTimeout 回调都在循环结束后执行，此时 i 已经是 3，所以输出 3 3 3。使用 let 可以解决这个问题。',
   },
   {
-    id: 7,
+    id: '7-javascript',
     type: 'single',
     category: 'javascript',
     question: '关于 Event Loop，以下代码的输出顺序是？\n```js\nconsole.log("1");\nsetTimeout(() => console.log("2"), 0);\nPromise.resolve().then(() => console.log("3"));\nconsole.log("4");\n```',
@@ -70,7 +70,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '同步代码先执行，输出 1、4。然后微任务（Promise.then）优先于宏任务（setTimeout）执行，所以先输出 3，再输出 2。最终顺序：1 4 3 2。',
   },
   {
-    id: 8,
+    id: '8-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码中 this 指向什么？\n```js\nconst obj = {\n  name: "test",\n  getName: () => this.name\n};\nconsole.log(obj.getName());\n```',
@@ -79,7 +79,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '箭头函数没有自己的 this，它会捕获定义时外层作用域的 this。这里箭头函数定义在全局作用域（对象字面量不创建作用域），所以 this 指向全局对象（浏览器中是 window），window.name 默认为空字符串或 undefined。',
   },
   {
-    id: 9,
+    id: '9-javascript',
     type: 'multiple',
     category: 'javascript',
     question: '以下哪些方式可以实现深拷贝？（多选）',
@@ -88,7 +88,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'JSON.parse(JSON.stringify()) 和 structuredClone() 可以实现深拷贝。Object.assign 和展开运算符只能实现浅拷贝，嵌套对象仍然是引用。注意 JSON 方式无法处理函数、undefined、Symbol 等。',
   },
   {
-    id: 10,
+    id: '10-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nconsole.log([] == ![]);\n```',
@@ -97,7 +97,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '![] 先转为 false（因为空数组是 truthy）。然后 [] == false，两边都转为数字：[] 转为 0，false 转为 0，所以 0 == 0 为 true。这是 JS 隐式类型转换的经典陷阱。',
   },
   {
-    id: 11,
+    id: '11-javascript',
     type: 'single',
     category: 'javascript',
     question: '关于闭包，以下说法错误的是？',
@@ -111,7 +111,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '闭包并不只能在函数内部创建。闭包是指函数能够记住并访问其词法作用域，即使函数在其词法作用域之外执行。任何函数只要引用了外部作用域的变量，就形成了闭包。',
   },
   {
-    id: 12,
+    id: '12-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下哪个方法可以将类数组对象转为真正的数组？',
@@ -120,7 +120,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'Array.from() 可以将类数组对象（如 arguments、NodeList）和可迭代对象转为真正的数组。Array.of() 创建新数组，Array.isArray() 判断是否为数组，fill() 填充数组。',
   },
   {
-    id: 13,
+    id: '13-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nconsole.log(0.1 + 0.2 === 0.3);\n```',
@@ -129,7 +129,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'JavaScript 使用 IEEE 754 双精度浮点数，0.1 + 0.2 的结果是 0.30000000000000004，不等于 0.3。比较浮点数应使用 Math.abs(a - b) < Number.EPSILON。',
   },
   {
-    id: 14,
+    id: '14-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nlet a = { n: 1 };\nlet b = a;\na = { n: 2 };\nconsole.log(b.n);\n```',
@@ -138,7 +138,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'a = { n: 2 } 是让 a 指向一个新对象，并不会影响 b 的指向。b 仍然指向原来的 { n: 1 } 对象，所以 b.n 为 1。这是引用赋值和重新赋值的区别。',
   },
   {
-    id: 15,
+    id: '15-javascript',
     type: 'single',
     category: 'javascript',
     question: 'async 函数的返回值是什么？',
@@ -147,7 +147,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'async 函数总是返回一个 Promise。如果 return 一个非 Promise 值，会自动用 Promise.resolve() 包装；如果 return 一个 Promise，则直接返回该 Promise。',
   },
   {
-    id: 16,
+    id: '16-javascript',
     type: 'multiple',
     category: 'javascript',
     question: '以下哪些值在 if 判断中为 falsy？（多选）',
@@ -156,7 +156,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'JavaScript 中的 falsy 值有：false、0、-0、0n、""、null、undefined、NaN。空数组 [] 是 truthy 值，因为它是一个对象。',
   },
   {
-    id: 17,
+    id: '17-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nfunction Foo() {\n  return this;\n}\nconsole.log(new Foo() === Foo());\n```',
@@ -165,7 +165,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'new Foo() 创建一个新对象并将 this 绑定到该新对象。Foo() 直接调用时 this 指向全局对象（非严格模式）。两者不是同一个对象，所以为 false。',
   },
   {
-    id: 18,
+    id: '18-javascript',
     type: 'single',
     category: 'javascript',
     question: 'WeakMap 和 Map 的主要区别是？',
@@ -179,7 +179,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'WeakMap 的键必须是对象（或 Symbol），且对键是弱引用，不会阻止垃圾回收。WeakMap 不可遍历、没有 size 属性。适合存储与对象关联的元数据而不造成内存泄漏。',
   },
   {
-    id: 19,
+    id: '19-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nconst arr = [1, 2, 3];\narr.length = 0;\nconsole.log(arr);\n```',
@@ -188,7 +188,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '设置数组的 length 为 0 会清空数组中的所有元素。这是清空数组的一种常用方式，比 arr = [] 更好，因为它会修改原数组引用。',
   },
   {
-    id: 20,
+    id: '20-javascript',
     type: 'single',
     category: 'javascript',
     question: 'Symbol 的主要用途是？',
@@ -202,7 +202,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'Symbol 是 ES6 新增的原始类型，每个 Symbol 值都是唯一的。主要用于创建对象的唯一属性键，避免属性名冲突。也用于定义内置行为（如 Symbol.iterator）。',
   },
   {
-    id: 21,
+    id: '21-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nconst p = new Promise((resolve, reject) => {\n  reject("error");\n  resolve("success");\n});\np.then(console.log).catch(console.log);\n```',
@@ -211,7 +211,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'Promise 的状态一旦从 pending 变为 rejected 就不可再改变。reject("error") 先执行，Promise 变为 rejected 状态，后续的 resolve("success") 无效。',
   },
   {
-    id: 22,
+    id: '22-javascript',
     type: 'multiple',
     category: 'javascript',
     question: '以下哪些是 ES2020+ 新增的特性？（多选）',
@@ -220,7 +220,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '可选链 ?.、空值合并 ?? 和 Promise.allSettled() 都是 ES2020 新增的。Array.prototype.includes() 是 ES2016(ES7) 的特性。',
   },
   {
-    id: 23,
+    id: '23-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nconst obj = {};\nobj.__proto__.toString = () => "hacked";\nconsole.log({}.toString());\n```',
@@ -229,7 +229,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'obj.__proto__ 指向 Object.prototype。修改 Object.prototype.toString 会影响所有对象，因为 {} 也继承自 Object.prototype。这就是原型链污染的风险。',
   },
   {
-    id: 24,
+    id: '24-javascript',
     type: 'single',
     category: 'javascript',
     question: 'Generator 函数的特点是？',
@@ -243,7 +243,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'Generator 函数使用 function* 声明，内部通过 yield 暂停执行并产出值。调用 next() 恢复执行到下一个 yield。返回一个迭代器对象，常用于异步流程控制和惰性求值。',
   },
   {
-    id: 25,
+    id: '25-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nconsole.log("5" - 3);\nconsole.log("5" + 3);\n```',
@@ -252,7 +252,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '减号 - 只用于数学运算，"5" 被转为数字 5，结果为 2。加号 + 遇到字符串会做拼接，3 被转为 "3"，结果为 "53"。这是 JS 隐式类型转换的经典问题。',
   },
   {
-    id: 26,
+    id: '26-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码的执行结果是？\n```js\nconst obj = { a: 1 };\nObject.freeze(obj);\nobj.a = 2;\nobj.b = 3;\nconsole.log(obj);\n```',
@@ -261,7 +261,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'Object.freeze() 冻结对象后，无法修改现有属性、添加新属性或删除属性。在非严格模式下静默失败，严格模式下会抛出 TypeError。',
   },
   {
-    id: 27,
+    id: '27-javascript',
     type: 'multiple',
     category: 'javascript',
     question: '以下哪些操作会导致内存泄漏？（多选）',
@@ -270,7 +270,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '定时器、闭包持有的引用、未移除的事件监听器都可能导致内存泄漏。const 只是声明常量，不会导致内存泄漏。',
   },
   {
-    id: 28,
+    id: '28-javascript',
     type: 'single',
     category: 'javascript',
     question: 'Webpack 的 Tree Shaking 主要依赖什么特性？',
@@ -279,7 +279,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'Tree Shaking 依赖 ES6 Module 的静态结构特性，在编译时就能确定模块依赖关系，从而删除未使用的代码。CommonJS 是动态加载，无法进行 Tree Shaking。',
   },
   {
-    id: 29,
+    id: '29-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nconst arr = [1, 2, 3];\nconst [a, ...b, c] = arr;\nconsole.log(b);\n```',
@@ -288,7 +288,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '剩余参数 ...b 必须是解构模式中的最后一个元素，不能在它后面再有其他元素。这段代码会抛出语法错误。',
   },
   {
-    id: 30,
+    id: '30-javascript',
     type: 'single',
     category: 'javascript',
     question: 'XSS 攻击的主要防御手段是？',
@@ -302,7 +302,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'XSS（跨站脚本攻击）的主要防御是对用户输入进行转义和过滤，避免恶意脚本注入。还可以使用 CSP（内容安全策略）、HttpOnly Cookie 等措施。',
   },
   {
-    id: 31,
+    id: '31-javascript',
     type: 'multiple',
     category: 'javascript',
     question: '以下哪些是防止 CSRF 攻击的有效方法？（多选）',
@@ -311,7 +311,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'CSRF Token、验证 Referer、SameSite Cookie 都是有效的 CSRF 防御手段。使用 GET 请求修改数据违反 RESTful 原则，反而容易受到 CSRF 攻击。',
   },
   {
-    id: 32,
+    id: '32-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nfunction* gen() {\n  yield 1;\n  yield 2;\n  return 3;\n}\nconst g = gen();\nconsole.log([...g]);\n```',
@@ -320,7 +320,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '展开运算符和 for...of 只会迭代 yield 产出的值，不包括 return 的值。return 的值只能通过 next() 方法的返回对象获取。',
   },
   {
-    id: 33,
+    id: '33-javascript',
     type: 'single',
     category: 'javascript',
     question: 'Webpack 中 loader 和 plugin 的区别是？',
@@ -334,7 +334,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'loader 用于转换特定类型的模块（如将 TS 转为 JS），在模块加载时执行。plugin 可以在 Webpack 构建流程的各个阶段执行更广泛的任务（如代码压缩、资源优化）。',
   },
   {
-    id: 34,
+    id: '34-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nconst promise = Promise.resolve();\npromise.then(() => console.log(1));\nqueueMicrotask(() => console.log(2));\nconsole.log(3);\n```',
@@ -343,7 +343,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '同步代码先执行输出 3，然后微任务队列按顺序执行：Promise.then 和 queueMicrotask 都是微任务，按添加顺序执行，输出 1 2。',
   },
   {
-    id: 35,
+    id: '35-javascript',
     type: 'multiple',
     category: 'javascript',
     question: '以下哪些是提升首屏加载性能的有效方法？（多选）',
@@ -353,7 +353,7 @@ export const javascriptQuestions: Question[] = [
   },
   // ========== 实战类 & 场景题 ==========
   {
-    id: 36,
+    id: '36-javascript',
     type: 'single',
     category: 'javascript',
     question: '实现一个防抖函数，以下哪种实现是正确的？',
@@ -367,7 +367,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '防抖的核心是每次调用时先清除上一次的定时器再重新设置。选项 A 正确地使用 clearTimeout 清除旧定时器。选项 B 没有清除定时器会导致每次都执行；选项 C 没有清除旧定时器；选项 D 完全错误。',
   },
   {
-    id: 37,
+    id: '37-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：用户快速连续点击"提交订单"按钮，如何防止重复提交？以下哪种方案最合适？',
@@ -381,7 +381,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '最佳方案是点击后禁用按钮（防止二次点击），请求完成后恢复，同时后端接口要做幂等处理。debounce 只能延迟执行不能完全避免重复；alert 体验差；pointer-events 只能阻止鼠标事件不能阻止键盘触发。',
   },
   {
-    id: 38,
+    id: '38-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：实现一个请求并发控制，最多同时发送 3 个请求。以下哪种方案最合理？',
@@ -395,7 +395,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '请求并发控制的标准方案是维护一个执行池（如 p-limit 库的实现），池满时新请求排队等待，某个请求完成后自动从队列中取出下一个执行。Promise.all 会一次性全部发送；setTimeout 不能精确控制并发数；逐个发送没有利用并发能力。',
   },
   {
-    id: 39,
+    id: '39-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：需要实现一个大文件上传功能，以下哪种方案最佳？',
@@ -409,7 +409,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '大文件上传最佳方案是分片上传：使用 File.slice() 将文件切片，并发上传各分片，支持断点续传（记录已上传分片），上传完成后服务端合并。一次性上传可能超时或内存溢出；Base64 会增大 33% 体积；WebSocket 不适合大文件传输。',
   },
   {
-    id: 40,
+    id: '40-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码实现数组扁平化，输出什么？\n```js\nfunction flatten(arr) {\n  return arr.reduce((acc, val) =>\n    Array.isArray(val) ? acc.concat(flatten(val)) : acc.concat(val), []);\n}\nconsole.log(flatten([1, [2, [3, [4]]]]));\n```',
@@ -418,7 +418,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '这是递归实现的数组扁平化。reduce 遍历数组，遇到数组元素就递归调用 flatten，遇到非数组元素直接 concat。最终所有嵌套都被展开，输出 [1, 2, 3, 4]。也可以使用 arr.flat(Infinity) 实现。',
   },
   {
-    id: 41,
+    id: '41-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：实现一个虚拟列表渲染 10 万条数据，核心原理是？',
@@ -432,7 +432,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '虚拟列表的核心原理是只渲染可视区域（viewport）中的元素。通过监听滚动事件，计算当前可见区域对应的数据索引，只创建这些数据的 DOM 元素。这样无论数据有多少条，DOM 节点数始终保持在较小的范围内。',
   },
   {
-    id: 42,
+    id: '42-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：实现一个深拷贝函数，需要处理循环引用。以下哪种实现思路是正确的？',
@@ -446,7 +446,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '处理循环引用的深拷贝需要用 WeakMap 记录已拷贝的对象。递归时先检查 WeakMap 中是否已存在该对象的拷贝，如果有直接返回，否则创建新拷贝并记录。JSON 方式遇到循环引用会报错；Object.assign 是浅拷贝。',
   },
   {
-    id: 43,
+    id: '43-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：页面中有一个包含 1000 个子元素的列表，需要为每个子元素绑定点击事件。最优方案是？',
@@ -460,7 +460,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '事件委托利用事件冒泡机制，只在父元素上绑定一个事件监听器，通过 event.target 判断实际点击的子元素。这样只需要 1 个监听器而不是 1000 个，大幅减少内存占用，且动态新增的子元素也自动具有事件处理能力。',
   },
   {
-    id: 44,
+    id: '44-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：实现一个节流函数（throttle），确保函数在指定时间内最多执行一次。以下哪种实现是正确的？',
@@ -474,7 +474,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '节流的核心是在指定时间间隔内最多执行一次。选项 A 使用时间戳方式，记录上次执行时间，只有间隔超过 delay 才执行。选项 B 每次都延迟执行不是节流；选项 C 是防抖实现；选项 D 直接执行没有节流效果。',
   },
   {
-    id: 45,
+    id: '45-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：前端需要实现 token 无感刷新，即 access_token 过期时自动刷新并重试请求。以下哪种方案最合理？',
@@ -488,7 +488,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '最佳方案是在 axios 响应拦截器中捕获 401 错误，使用 refresh_token 请求新的 access_token，然后将失败的请求用新 token 重新发送。还需注意多个请求同时 401 时要用队列避免重复刷新 token。',
   },
   {
-    id: 46,
+    id: '46-javascript',
     type: 'multiple',
     category: 'javascript',
     question: '场景：要实现前端水印功能，以下哪些方案可以增强水印的防篡改能力？（多选）',
@@ -502,7 +502,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'MutationObserver 可以监听 DOM 变化并重新生成水印；Canvas 绘制的背景图不易被直接修改 DOM 删除；Shadow DOM 封装的节点外部难以直接访问和修改。CSS 伪元素虽然不能通过 JS 直接操作，但可以通过删除父元素或修改样式轻松移除。',
   },
   {
-    id: 47,
+    id: '47-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：前端需要实现一个"复制到剪贴板"功能，推荐使用哪个 API？',
@@ -516,7 +516,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'navigator.clipboard.writeText() 是现代浏览器推荐的剪贴板 API，返回 Promise，异步且安全。document.execCommand("copy") 已被标记为废弃；window.clipboardData 仅 IE 支持；document.write 与剪贴板无关。',
   },
   {
-    id: 48,
+    id: '48-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码实现柯里化，输出什么？\n```js\nfunction curry(fn) {\n  return function curried(...args) {\n    if (args.length >= fn.length) return fn(...args);\n    return (...more) => curried(...args, ...more);\n  };\n}\nconst add = curry((a, b, c) => a + b + c);\nconsole.log(add(1)(2)(3));\n```',
@@ -525,7 +525,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'curry 函数将多参数函数转为可以逐个传参调用。add(1) 返回一个等待更多参数的函数，add(1)(2) 同理，add(1)(2)(3) 时参数数量满足 fn.length（3），执行 1+2+3=6。',
   },
   {
-    id: 49,
+    id: '49-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：实现一个发布-订阅模式（EventEmitter），以下哪个方法用于触发事件并通知所有订阅者？',
@@ -534,7 +534,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'emit() 用于触发事件并执行所有该事件的回调。on() 用于订阅事件；off() 用于取消订阅；once() 用于订阅只执行一次的事件。这是 EventEmitter 的标准 API 设计。',
   },
   {
-    id: 50,
+    id: '50-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：页面性能监控中，如何获取页面的首次内容绘制（FCP）时间？',
@@ -548,7 +548,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '使用 Performance API 的 getEntriesByName("first-contentful-paint") 可以精确获取 FCP 时间。onload 是所有资源加载完成的时间；DOMContentLoaded 是 DOM 解析完成的时间；readyState 不够精确。也可以使用 PerformanceObserver 监听。',
   },
   {
-    id: 51,
+    id: '51-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：实现一个前端路由，hash 模式和 history 模式的核心区别是？',
@@ -562,7 +562,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'hash 模式通过 URL 的 # 部分实现路由，hash 变化不会触发页面刷新和服务端请求。history 模式使用 pushState/replaceState API，URL 更美观，但刷新时会向服务器发送请求，需要服务端配置将所有路由指向 index.html。',
   },
   {
-    id: 52,
+    id: '52-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：用户反馈页面白屏，以下排查步骤中优先级最高的是？',
@@ -576,7 +576,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '页面白屏最常见的原因是 JS 执行报错导致渲染中断。优先查看控制台错误信息，可以快速定位问题。常见原因包括：接口数据格式异常、未处理的 undefined 访问、打包配置错误、路由配置问题等。',
   },
   {
-    id: 53,
+    id: '53-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：需要在前端实现一个长列表的搜索过滤功能，数据量为 5 万条。如何保证输入搜索时不卡顿？',
@@ -590,7 +590,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '防抖可以避免每次按键都触发搜索；Web Worker 在后台线程执行过滤计算不阻塞主线程渲染。直接过滤 5 万条数据会阻塞主线程导致卡顿；分页搜索会遗漏数据；CSS 隐藏仍然需要遍历所有 DOM。',
   },
   {
-    id: 54,
+    id: '54-javascript',
     type: 'multiple',
     category: 'javascript',
     question: '场景：实现前端权限控制，以下哪些是常见的实现方式？（多选）',
@@ -604,7 +604,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '前端权限控制通常包含路由级和按钮级。路由守卫 + 动态路由可以控制页面访问权限；v-if 和自定义指令可以控制按钮级权限。仅用 CSS 隐藏不安全，用户可以通过开发者工具修改样式看到隐藏内容。',
   },
   {
-    id: 55,
+    id: '55-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：实现一个 Promise.allSettled 的 polyfill，它和 Promise.all 的区别是？',
@@ -618,7 +618,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'Promise.allSettled 等待所有 Promise 完成，返回一个数组，每个元素包含 status（"fulfilled" 或 "rejected"）和 value/reason。与 Promise.all 不同，它不会因为某个 Promise 失败而短路，适合需要知道所有请求结果的场景。',
   },
   {
-    id: 56,
+    id: '56-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：前端需要实现一个倒计时功能（如秒杀倒计时），以下哪种方案最准确？',
@@ -632,7 +632,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '倒计时应以服务端时间为基准，避免用户修改本地时间导致倒计时不准。计算服务端时间与本地时间的差值，每次更新时用 Date.now() + 差值计算当前服务端时间，再与结束时间比较。setInterval 存在时间漂移问题且不能防止用户改时间。',
   },
   {
-    id: 57,
+    id: '57-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码输出什么？\n```js\nasync function async1() {\n  console.log("a");\n  await async2();\n  console.log("b");\n}\nasync function async2() {\n  console.log("c");\n}\nconsole.log("d");\nasync1();\nconsole.log("e");\n```',
@@ -641,7 +641,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '执行顺序：同步执行 console.log("d") → 调用 async1，同步执行 console.log("a") → 调用 async2，同步执行 console.log("c") → await 后面的代码变为微任务 → 继续同步执行 console.log("e") → 微任务执行 console.log("b")。',
   },
   {
-    id: 58,
+    id: '58-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：需要检测用户是否长时间未操作页面（如 15 分钟无操作自动退出登录），最佳实现方式是？',
@@ -655,7 +655,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '监听用户交互事件（mousemove、keydown、click、scroll 等），每次交互时用防抖重置一个定时器。如果指定时间内没有任何交互，定时器触发后执行自动退出逻辑。Page Visibility API 只能检测页面是否可见，不能精确判断用户是否在操作。',
   },
   {
-    id: 59,
+    id: '59-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：前端项目中如何实现错误监控和上报？以下哪种方式可以捕获未处理的 Promise 异常？',
@@ -669,7 +669,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'unhandledrejection 事件专门用于捕获未处理的 Promise 拒绝。window.onerror 只能捕获同步错误和资源加载错误，无法捕获 Promise 异常。try...catch 只能捕获同步代码或 async/await 中的错误。',
   },
   {
-    id: 60,
+    id: '60-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：实现图片懒加载，现代浏览器中最推荐的方式是？',
@@ -683,7 +683,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'IntersectionObserver 是专门用于检测元素是否进入可视区域的 API，性能优于 scroll 事件监听（不需要频繁计算位置，由浏览器优化）。也可以使用 <img loading="lazy"> 原生属性实现。scroll 方案需要配合防抖和 getBoundingClientRect，性能较差。',
   },
   {
-    id: 61,
+    id: '61-javascript',
     type: 'multiple',
     category: 'javascript',
     question: '场景：SPA 应用中如何优化 SEO？（多选）',
@@ -697,7 +697,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'SSR/SSG 让搜索引擎爬虫能直接获取渲染后的 HTML；预渲染为关键页面生成静态 HTML 文件；meta 和 OG 标签提供页面元信息。更多 JS 动态内容反而会加重 SEO 问题，因为爬虫可能无法执行 JavaScript。',
   },
   {
-    id: 62,
+    id: '62-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：实现一个 retry 函数，请求失败时自动重试最多 3 次。以下实现思路正确的是？',
@@ -711,7 +711,7 @@ export const javascriptQuestions: Question[] = [
     explanation: '正确实现：async function retry(fn, times) { try { return await fn(); } catch(e) { if (times <= 0) throw e; return retry(fn, times - 1); } }。递归结构清晰，每次失败减少重试次数，到 0 时抛出错误。还可以加入延迟重试（指数退避）策略。',
   },
   {
-    id: 63,
+    id: '63-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：两个不同源的页面（如主应用和 iframe 子应用）需要通信，最安全的方式是？',
@@ -725,7 +725,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'postMessage 是跨源通信的标准安全方式，发送方指定目标 origin，接收方通过 event.origin 验证来源。直接访问跨域 iframe 会被同源策略阻止；修改 domain 只适用于同一主域；localStorage 不能跨域共享。',
   },
   {
-    id: 64,
+    id: '64-javascript',
     type: 'single',
     category: 'javascript',
     question: '场景：前端实现一个"Excel 导出"功能，将表格数据导出为 .xlsx 文件。以下哪种方案最常用？',
@@ -739,7 +739,7 @@ export const javascriptQuestions: Question[] = [
     explanation: 'SheetJS 是最流行的前端 Excel 处理库，支持生成标准 .xlsx 格式。流程：构造 workbook 和 worksheet → 写入数据 → 生成 Blob → 使用 URL.createObjectURL 创建下载链接。CSV 方案不支持多 sheet 和样式；截图和打印不是 Excel 格式。',
   },
   {
-    id: 65,
+    id: '65-javascript',
     type: 'single',
     category: 'javascript',
     question: '以下代码实现 instanceof，输出什么？\n```js\nfunction myInstanceof(obj, constructor) {\n  let proto = Object.getPrototypeOf(obj);\n  while (proto) {\n    if (proto === constructor.prototype) return true;\n    proto = Object.getPrototypeOf(proto);\n  }\n  return false;\n}\nconsole.log(myInstanceof([], Array));\nconsole.log(myInstanceof([], Object));\n```',

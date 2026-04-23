@@ -5,7 +5,7 @@
 
 /** 题目接口 */
 export interface Question {
-  id: number                                    // 题目唯一标识
+  id: string                                    // 题目唯一标识（格式：数字-分类，如 "1-javascript"）
   type: 'single' | 'multiple'                   // 题型：单选 | 多选
   category: 'javascript' | 'vue2' | 'vue3' | 'miniprogram'      // 所属分类
   question: string                               // 题目文本（支持 Markdown 代码块）
@@ -22,13 +22,13 @@ export type QuizMode = 'random' | 'timed' | 'challenge' | 'sequential'
 
 /** 用户作答记录 */
 export interface UserAnswer {
-  questionId: number                             // 题目ID
+  questionId: string                             // 题目ID
   answer: number | number[]                      // 用户选择的答案索引
 }
 
 /** 错题记录 */
 export interface WrongRecord {
-  questionId: number                             // 题目ID
+  questionId: string                             // 题目ID
   category: Category                             // 所属分类
   userAnswer: number | number[]                  // 用户的错误答案
   wrongCount: number                             // 累计答错次数

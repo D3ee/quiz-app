@@ -42,13 +42,13 @@ export const useQuizStore = defineStore('quiz', () => {
   // ==================== 核心答题状态 ====================
   const currentCategory = ref<Category>('javascript')  // 当前答题分类
   const currentIndex = ref(0)                           // 当前题目索引
-  const userAnswers = ref<Record<number, number | number[]>>({}) // 用户作答记录 { 题目ID: 答案 }
+  const userAnswers = ref<Record<string, number | number[]>>({}) // 用户作答记录 { 题目ID: 答案 }
   const submitted = ref(false)                          // 是否已提交答卷
   const questions = ref<Question[]>([])                 // 当前答题的题目列表
   const startTime = ref(0)                              // 答题开始时间戳
   const endTime = ref(0)                                // 答题结束时间戳
   // 已抽过的题目ID记录（按分类），用于随机模式避免重复抽题
-  const usedQuestionIds = ref<Record<Category, number[]>>({
+  const usedQuestionIds = ref<Record<Category, string[]>>({
     javascript: [],
     vue2: [],
     vue3: [],
@@ -64,7 +64,7 @@ export const useQuizStore = defineStore('quiz', () => {
   // ==================== 持久化数据 ====================
   const wrongRecords = ref<WrongRecord[]>([])           // 错题本记录
   const quizHistory = ref<QuizHistory[]>([])            // 答题历史记录
-  const favoriteIds = ref<number[]>([])                 // 收藏的题目ID列表
+  const favoriteIds = ref<string[]>([])                 // 收藏的题目ID列表
 
   // ==================== 计算属性 ====================
   /** 当前题目对象 */
@@ -112,9 +112,8 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
     const allQuestions = questionPool[category]
     
     if (mode === 'sequential') {
-      // 顺序模式：按题目ID升序排列
-      const sorted = [...allQuestions].sort((a, b) => a.id - b.id)
-      questions.value = count ? sorted.slice(0, count) : sorted
+      // 顺序模式：按题目原始顺序（题目文件中的顺序）
+      questions.value = count ? allQuestions.slice(0, count) : [...allQuestions]
       return
     }
     
@@ -126,7 +125,7 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
     }
     
     // ===== 随机/限时模式：避免重复抽题 =====
-    const usedIds = new Set(usedQuestionIds.value[category])
+    const usedIds = new Set<string>(usedQuestionIds.value[category])
     
     // 过滤出未抽过的题目
     let availableQuestions = allQuestions.filter(q => !usedIds.has(q.id))
@@ -162,6 +161,7 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
       ...questionPool.javascript,
       ...questionPool.vue2,
       ...questionPool.vue3,
+      ...questionPool.miniprogram,
     ]
     const selected = allQ.filter(q => ids.includes(q.id))
     if (selected.length === 0) return false
@@ -179,7 +179,7 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
   }
 
   /** 记录用户对某题的作答 */
-  function setAnswer(questionId: number, answer: number | number[]) {
+  function setAnswer(questionId: string, answer: number | number[]) {
     userAnswers.value[questionId] = answer
   }
 
@@ -275,7 +275,7 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
   }
 
   /** 切换题目收藏状态（已收藏则取消，未收藏则添加） */
-  function toggleFavorite(questionId: number) {
+  function toggleFavorite(questionId: string) {
     const idx = favoriteIds.value.indexOf(questionId)
     if (idx >= 0) {
       favoriteIds.value.splice(idx, 1)
@@ -285,7 +285,7 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
   }
 
   /** 判断题目是否已收藏 */
-  function isFavorite(questionId: number): boolean {
+  function isFavorite(questionId: string): boolean {
     return favoriteIds.value.includes(questionId)
   }
 

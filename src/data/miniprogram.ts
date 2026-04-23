@@ -3,7 +3,7 @@ import type { Question } from '../types'
 export const miniprogramQuestions: Question[] = [
   // ==================== 单选题 (401-425) ====================
   {
-    id: 401,
+    id: '401-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，页面生命周期 `onLoad` 和 `onShow` 的执行顺序是？',
@@ -12,7 +12,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序页面生命周期执行顺序为：onLoad → onShow → onReady。onLoad 在页面加载时触发，onShow 在页面显示时触发，因此 onLoad 先于 onShow 执行。',
   },
   {
-    id: 402,
+    id: '402-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，使用 `wx.navigateTo` 跳转页面时，最多可以打开几层页面？',
@@ -21,7 +21,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'wx.navigateTo 保留当前页面，跳转到应用内的某个页面，但最多只能打开 10 层页面。超过 10 层后需要使用 wx.redirectTo 或 wx.reLaunch 进行跳转。',
   },
   {
-    id: 403,
+    id: '403-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，页面数据绑定使用的是哪种语法？',
@@ -30,7 +30,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序 WXML 模板使用 Mustache 语法 {{ }} 进行数据绑定，与 Vue 的插值语法一致。可以在标签属性、文本节点和标签属性值中使用。',
   },
   {
-    id: 404,
+    id: '404-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，组件间通信子组件向父组件传递数据应该使用？',
@@ -39,7 +39,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序自定义组件中，子组件通过 this.triggerEvent(eventName, data) 触发自定义事件，父组件在 WXML 中通过 bind:eventName 监听并接收数据。',
   },
   {
-    id: 405,
+    id: '405-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，`wx.request` 请求的默认超时时间是？',
@@ -48,7 +48,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'wx.request 的默认超时时间为 60 秒，可以通过 timeout 参数自定义，范围 0-60000 毫秒（0 表示不限制，但实际受平台限制）。',
   },
   {
-    id: 406,
+    id: '406-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，全局数据存储推荐使用？',
@@ -57,7 +57,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序没有 window 对象，也不支持 localStorage/sessionStorage。推荐在 App 实例的 globalData 中存储全局数据，或使用 Storage API（wx.setStorageSync 等）。',
   },
   {
-    id: 407,
+    id: '407-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，以下哪个 API 用于获取用户信息（头像、昵称）？',
@@ -66,7 +66,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'wx.getUserProfile 是微信官方推荐的获取用户信息的方式（基础库 2.10.4+），每次调用都会弹出用户授权窗口。wx.getUserInfo 已废弃，不再返回真实用户信息。',
   },
   {
-    id: 408,
+    id: '408-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，页面配置 `enablePullDownRefresh` 设置为 true 后，下拉刷新完成后需要调用？',
@@ -75,7 +75,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '开启下拉刷新后，数据加载完成需要调用 `wx.stopPullDownRefresh()` 来停止下拉刷新动画，否则下拉状态会一直持续。',
   },
   {
-    id: 409,
+    id: '409-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，分包加载的主包大小限制是？',
@@ -84,7 +84,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '微信小程序主包大小限制为 2MB，整个小程序所有分包加起来不超过 20MB（单个分包/独立分包不超过 2MB）。主包包含启动页面和 TabBar 页面。',
   },
   {
-    id: 410,
+    id: '410-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: 'UniApp 中，条件编译的语法是？',
@@ -93,7 +93,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'UniApp 使用注释形式的条件编译语法，如 `<!-- #ifdef H5 -->...<!-- #endif -->`（模板中）或 `// #ifdef APP-PLUS`（JS/CSS 中），用于区分不同平台的代码。',
   },
   {
-    id: 411,
+    id: '411-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: 'UniApp 中，使用 `uni.request` 发起网络请求，返回的数据在？',
@@ -102,7 +102,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'uni.request 的成功回调参数 res 中，res.data 包含服务器返回的数据，res.statusCode 是 HTTP 状态码，res.header 是响应头。',
   },
   {
-    id: 412,
+    id: '412-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，`setData` 方法的作用是？',
@@ -111,7 +111,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '`this.setData()` 是小程序框架提供的方法，用于将数据从逻辑层（JS）异步发送到视图层（WXML），同时改变对应的 this.data 的值。不能直接修改 this.data。',
   },
   {
-    id: 413,
+    id: '413-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，自定义组件的 `properties` 和 `data` 的区别是？',
@@ -120,7 +120,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'properties 用于声明组件的属性，接收父组件通过 WXML 属性传入的数据，支持类型检查和默认值。data 是组件内部私有数据，用于组件的模板渲染和逻辑计算。',
   },
   {
-    id: 414,
+    id: '414-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，以下哪个文件用于配置页面路由和窗口表现？',
@@ -129,7 +129,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'app.json 是小程序的全局配置文件，用于配置页面路径列表（pages）、窗口表现（window）、底部 tabBar 等。page.json 是单页面的配置文件。',
   },
   {
-    id: 415,
+    id: '415-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: 'UniApp 中，页面生命周期 `onReady` 对应微信小程序的哪个生命周期？',
@@ -138,7 +138,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'UniApp 的页面生命周期与微信小程序保持一致，onReady 表示页面初次渲染完成。UniApp 在编译到不同平台时会映射为对应平台的生命周期。',
   },
   {
-    id: 416,
+    id: '416-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，`wx.login` 获取的 `code` 有效期是？',
@@ -147,7 +147,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'wx.login 获取的临时登录凭证 code 有效期为 5 分钟，且只能使用一次。需要在后端调用 auth.code2Session 接口，使用 code 换取 openid 和 session_key。',
   },
   {
-    id: 417,
+    id: '417-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，以下哪个不是合法的跳转 API？',
@@ -156,7 +156,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序合法的页面跳转 API 包括：wx.navigateTo（保留当前页）、wx.redirectTo（关闭当前页）、wx.switchTab（跳转到 TabBar 页）、wx.reLaunch（关闭所有页）、wx.navigateBack（返回）。没有 wx.pushTo。',
   },
   {
-    id: 418,
+    id: '418-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: 'UniApp 中，使用 Vue 语法编写时，数据绑定使用？',
@@ -165,7 +165,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'UniApp 使用 Vue 语法时，支持标准的 Vue 模板语法：{{ }} 用于文本插值，v-bind 或 : 用于属性绑定，v-on 或 @ 用于事件绑定，v-model 用于双向绑定。',
   },
   {
-    id: 419,
+    id: '419-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，`wx.getStorageSync` 的同步版本和异步版本 `wx.getStorage` 的区别是？',
@@ -174,7 +174,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'wx.getStorageSync 是同步 API，会阻塞当前线程直到操作完成，适合读取小量关键配置。wx.getStorage 是异步 API，不会阻塞，适合大量数据读写。',
   },
   {
-    id: 420,
+    id: '420-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，组件的 `behaviors` 类似于 Vue 的？',
@@ -183,7 +183,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序的 behaviors 是一种代码复用机制，类似于 Vue 的 mixins 或 React 的高阶组件。可以将一些通用的数据、方法、生命周期等注入到多个组件中。',
   },
   {
-    id: 421,
+    id: '421-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，使用 `wx:for` 渲染列表时，指定唯一标识应该使用？',
@@ -192,7 +192,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序列表渲染使用 `wx:for`，通过 `wx:key` 指定列表中项目的唯一标识符，类似于 Vue 的 :key，用于提高列表渲染性能和保持组件状态。',
   },
   {
-    id: 422,
+    id: '422-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: 'UniApp 中，打包为 H5 时，路由模式默认是？',
@@ -201,7 +201,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'UniApp 打包为 H5 时，默认使用 hash 路由模式（URL 带 # 号）。可以在 manifest.json 中配置为 history 模式，但需要服务端配合处理刷新 404 问题。',
   },
   {
-    id: 423,
+    id: '423-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，以下哪个不是小程序的视图容器组件？',
@@ -210,7 +210,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'div 是 HTML 标签，不是小程序组件。小程序的视图容器组件包括 view（视图容器）、scroll-view（可滚动视图）、swiper（滑块视图）、cover-view（覆盖原生组件的视图）等。',
   },
   {
-    id: 424,
+    id: '424-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，使用 `wx.previewImage` 预览图片时，当前显示图片的索引参数是？',
@@ -219,7 +219,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'wx.previewImage 的参数中，current 表示当前显示图片的链接（或索引，不同基础库版本有差异），urls 是图片链接列表。',
   },
   {
-    id: 425,
+    id: '425-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: 'UniApp 中，使用 `nvue` 页面时，布局系统基于？',
@@ -228,7 +228,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'nvue 是 UniApp 的原生渲染引擎页面，基于 Weex 的 Flex 布局系统，只支持 Flex 布局，不支持 CSS 的 block、inline 等传统布局方式。',
   },
   {
-    id: 426,
+    id: '426-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，`App.onLaunch` 生命周期在什么时候触发？',
@@ -237,7 +237,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'App.onLaunch 在小程序冷启动时触发一次，热启动（后台切前台）不会再次触发，而是触发 onShow。适合做一些一次性的初始化工作。',
   },
   {
-    id: 427,
+    id: '427-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，以下哪个 API 用于获取系统信息（如屏幕宽高、设备型号）？',
@@ -246,7 +246,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'wx.getSystemInfo / wx.getSystemInfoSync 用于获取系统信息，包括屏幕宽高、设备型号、操作系统版本、基础库版本等。',
   },
   {
-    id: 428,
+    id: '428-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: 'UniApp 中，跨端兼容时，判断当前平台应该使用？',
@@ -256,7 +256,7 @@ export const miniprogramQuestions: Question[] = [
   },
   // ==================== 多选题 (431-440) ====================
   {
-    id: 431,
+    id: '431-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: '微信小程序中，以下哪些是合法的页面跳转 API？（多选）',
@@ -265,7 +265,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '这四个都是小程序合法的页面跳转 API。navigateTo 保留当前页打开新页（最多10层），redirectTo 关闭当前页打开新页，switchTab 跳转到 TabBar 页，navigateBack 返回上一页或多页。',
   },
   {
-    id: 432,
+    id: '432-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: 'UniApp 中，以下哪些是支持的平台？（多选）',
@@ -274,7 +274,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'UniApp 支持一套代码编译到多个平台，包括：微信小程序、H5、App（iOS/Android）、支付宝小程序、百度小程序、字节跳动小程序、QQ 小程序、快应用等。',
   },
   {
-    id: 433,
+    id: '433-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: '微信小程序中，以下哪些属于页面生命周期？（多选）',
@@ -283,7 +283,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序页面完整生命周期包括：onLoad（加载）、onShow（显示）、onReady（初次渲染完成）、onHide（隐藏）、onUnload（卸载）。还有 onPullDownRefresh、onReachBottom 等事件处理函数。',
   },
   {
-    id: 434,
+    id: '434-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: '微信小程序中，以下哪些方法可以优化小程序性能？（多选）',
@@ -292,7 +292,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序性能优化手段包括：分包加载减少主包体积、避免频繁/大量 setData（数据通信有开销）、图片懒加载减少首屏资源、使用 Storage 缓存减少网络请求等。',
   },
   {
-    id: 435,
+    id: '435-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: '微信小程序中，组件间通信的方式有哪些？（多选）',
@@ -301,7 +301,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序组件通信方式包括：properties 父传子、triggerEvent 子传父、selectComponent 获取组件实例直接操作、以及使用 mobx-miniprogram 等全局状态管理方案。',
   },
   {
-    id: 436,
+    id: '436-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: 'UniApp 中，条件编译可以区分的平台包括？（多选）',
@@ -310,7 +310,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'UniApp 条件编译支持的平台标识包括：H5、APP-PLUS（App）、MP-WEIXIN（微信小程序）、MP-ALIPAY（支付宝小程序）、MP-BAIDU、MP-TOUTIAO 等。',
   },
   {
-    id: 437,
+    id: '437-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: '微信小程序中，以下哪些是合法的存储 API？（多选）',
@@ -319,7 +319,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序提供完整的 Storage API：setStorage/setStorageSync（设置）、getStorage/getStorageSync（获取）、removeStorage/removeStorageSync（移除）、clearStorage/clearStorageSync（清空）。',
   },
   {
-    id: 438,
+    id: '438-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: '微信小程序中，以下哪些属于基础组件？（多选）',
@@ -328,7 +328,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'view（视图容器）、text（文本）、image（图片）、button（按钮）、input（输入框）都是小程序的基础组件。此外还有 scroll-view、swiper、checkbox、radio、picker 等。',
   },
   {
-    id: 439,
+    id: '439-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: '微信小程序中，以下哪些是常见的用户授权 scope？（多选）',
@@ -337,7 +337,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序常见的授权 scope 包括：userInfo（用户信息）、userLocation（地理位置）、camera（摄像头）、writePhotosAlbum（保存到相册）、record（录音）、bluetooth（蓝牙）等。',
   },
   {
-    id: 440,
+    id: '440-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: 'UniApp 中，以下哪些属于页面生命周期钩子？（多选）',
@@ -347,7 +347,7 @@ export const miniprogramQuestions: Question[] = [
   },
   // ==================== 场景题 (441-445) ====================
   {
-    id: 441,
+    id: '441-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '【场景题】某小程序首页需要展示一个商品列表，数据量较大，用户滑动到底部时需要自动加载更多。以下实现方案最合适的是？',
@@ -361,7 +361,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序提供了 onReachBottom 页面生命周期函数，当用户滑动页面到底部时自动触发，非常适合实现分页加载/无限滚动。scroll-view 的滚动事件在频繁触发时性能较差，不推荐用于列表加载。',
   },
   {
-    id: 442,
+    id: '442-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '【场景题】某电商小程序需要在商品详情页点击"立即购买"后跳转到订单确认页，且不希望用户能返回到商品详情页。应该使用？',
@@ -370,7 +370,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'wx.redirectTo 会关闭当前页面并跳转到新页面，用户无法通过返回键回到原页面，适合支付流程、登录流程等不需要返回的场景。navigateTo 会保留当前页，用户可返回。',
   },
   {
-    id: 443,
+    id: '443-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '【场景题】UniApp 项目需要同时支持微信小程序和 H5，但某个支付功能只在微信小程序中可用。最佳实现方式是？',
@@ -384,7 +384,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'UniApp 的条件编译是最佳方案，可以在编译期根据平台保留/剔除代码，如 `<!-- #ifdef MP-WEIXIN -->...<!-- #endif -->`。这样既保证了代码整洁，又不会将未使用的平台代码打包进去。',
   },
   {
-    id: 444,
+    id: '444-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: '【场景题】某小程序需要做用户登录态管理，以下哪些做法是正确的？（多选）',
@@ -398,7 +398,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '正确做法：wx.login 获取 code → 后端换取 openid/session_key → 后端生成自定义 token → 客户端存储 token 并在请求中携带。session_key 是敏感信息，绝对不能明文存储在客户端，应只保存在服务端。',
   },
   {
-    id: 445,
+    id: '445-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '【场景题】某 UniApp 项目打包为 App 后发现列表滑动卡顿，以下优化措施中最有效的是？',
@@ -413,7 +413,7 @@ export const miniprogramQuestions: Question[] = [
   },
   // ==================== 补充题目 (446-460) ====================
   {
-    id: 446,
+    id: '446-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，`wx.showModal` 和 `wx.showToast` 的区别是？',
@@ -422,7 +422,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'wx.showModal 显示模态对话框，可以配置 title、content、confirmText、cancelText 等，支持确认和取消按钮。wx.showToast 显示轻提示，自动消失，通常用于操作成功的反馈。',
   },
   {
-    id: 447,
+    id: '447-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，自定义组件的 `observers` 用于？',
@@ -431,7 +431,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序组件的 observers 字段用于监听 properties 和 data 的变化，类似于 Vue 的 watch。当监听的数据发生变化时，会执行对应的回调函数。',
   },
   {
-    id: 448,
+    id: '448-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: 'UniApp 中，`pages.json` 中的 `globalStyle` 用于？',
@@ -440,7 +440,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'pages.json 中的 globalStyle 用于设置应用的全局默认页面样式，如导航栏背景色、文字颜色等。单个页面可以在自己的 style 配置中覆盖全局样式。',
   },
   {
-    id: 449,
+    id: '449-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，以下哪个不是小程序的开放能力？',
@@ -449,7 +449,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序不支持直接访问任意网页（需要使用 web-view 组件且域名需在业务域名中配置）。微信支付、获取手机号（button 的 open-type）、分享到朋友圈（需满足条件）都是小程序的开放能力。',
   },
   {
-    id: 450,
+    id: '450-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，`web-view` 组件的作用是？',
@@ -458,7 +458,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'web-view 组件用于在小程序中嵌入 H5 网页，但需要在小程序管理后台配置业务域名，且个人类型小程序和部分类目不支持使用 web-view。',
   },
   {
-    id: 451,
+    id: '451-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，以下哪个事件在用户点击页面顶部导航栏返回按钮时触发？',
@@ -467,7 +467,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '用户点击导航栏返回按钮时，会触发页面的 onHide 和 onUnload 生命周期（如果是 navigateBack），但不会触发单独的 "返回" 事件。可以通过页面生命周期函数处理返回逻辑。',
   },
   {
-    id: 452,
+    id: '452-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: 'UniApp 中，使用 Vuex 进行状态管理时，在小程序端需要注意？',
@@ -476,7 +476,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'UniApp 基于 Vue，Vuex 在小程序端完全兼容。与标准 Vuex 用法一致，状态变更通过 mutations，异步操作通过 actions。',
   },
   {
-    id: 453,
+    id: '453-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，`wx.scanCode` 用于？',
@@ -485,7 +485,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'wx.scanCode 调起客户端扫码界面，扫描成功后返回扫码结果（包括内容、类型等）。生成二维码需要使用其他服务或库。',
   },
   {
-    id: 454,
+    id: '454-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，以下哪个文件类型不是小程序支持的？',
@@ -494,7 +494,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序支持的文件类型包括：.js（逻辑）、.json（配置）、.wxml（模板，类似 HTML）、.wxss（样式，类似 CSS）。不支持 .html 文件。',
   },
   {
-    id: 455,
+    id: '455-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: 'UniApp 中，以下哪个不是 `uni.showActionSheet` 的参数？',
@@ -503,7 +503,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'uni.showActionSheet 的参数包括：itemList（按钮文字数组）、itemColor（按钮文字颜色）、success/fail/complete 回调。没有 title 参数（alert/confirm 才有 title）。',
   },
   {
-    id: 456,
+    id: '456-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，以下哪个 API 用于获取当前位置？',
@@ -512,7 +512,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'wx.getLocation 获取当前地理位置，wx.chooseLocation 打开地图选择位置，wx.openLocation 使用微信内置地图查看位置。三个都与位置相关，但 getLocation 是直接获取当前位置。',
   },
   {
-    id: 457,
+    id: '457-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，页面 `json` 配置中 `usingComponents` 的作用是？',
@@ -521,7 +521,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '页面或组件的 json 配置中，usingComponents 用于声明页面/组件中使用的自定义组件，声明后可以在 WXML 中直接使用组件标签。',
   },
   {
-    id: 458,
+    id: '458-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: 'UniApp 中，`uni.makePhoneCall` 用于？',
@@ -530,7 +530,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'uni.makePhoneCall 用于拨打电话，参数 phoneNumber 指定电话号码。不同平台（App、H5、小程序）均支持，但 H5 端需要用户确认。',
   },
   {
-    id: 459,
+    id: '459-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，以下哪个不是 `wx.getSetting` 返回的授权信息字段？',
@@ -539,7 +539,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序没有 scope.network 这个授权项。常见的授权 scope 包括 userInfo、userLocation、camera、writePhotosAlbum、record、bluetooth 等。网络请求不需要用户授权。',
   },
   {
-    id: 460,
+    id: '460-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，使用 `wx.cloud.callFunction` 调用云函数时，云函数运行在？',
@@ -549,7 +549,7 @@ export const miniprogramQuestions: Question[] = [
   },
   // ==================== 补充题目 (461-472) ====================
   {
-    id: 461,
+    id: '461-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，以下哪种 `setData` 使用方式性能最差？',
@@ -558,7 +558,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'setData 是异步的数据通信过程，频繁调用会导致大量逻辑层-渲染层通信开销。应该合并多次更新为一次 setData，或使用防抖/节流优化。',
   },
   {
-    id: 462,
+    id: '462-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: '微信小程序中，以下哪些是长列表渲染优化的有效手段？（多选）',
@@ -567,7 +567,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '长列表优化包括：虚拟列表（只渲染可视区域）、分页加载（减少初始数据量）、图片懒加载（减少网络和渲染压力）、避免复杂计算（减少渲染耗时）。',
   },
   {
-    id: 463,
+    id: '463-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，`bindtap` 和 `catchtap` 的区别是？',
@@ -576,7 +576,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'bindtap 绑定的事件会冒泡（事件会向父节点传递），catchtap 绑定的事件会阻止冒泡。类似的还有 bind:tap 和 catch:tap。',
   },
   {
-    id: 464,
+    id: '464-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，事件对象 `event.target` 和 `event.currentTarget` 的区别是？',
@@ -585,7 +585,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'target 指触发事件的源组件（如点击的具体元素），currentTarget 指绑定事件监听器的组件（当前处理事件的组件）。在事件冒泡时两者可能不同。',
   },
   {
-    id: 465,
+    id: '465-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序自定义组件中，`styleIsolation` 设置为 `isolated` 表示？',
@@ -594,7 +594,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'styleIsolation 控制组件样式隔离。isolated（默认）表示完全隔离，apply-shared 表示页面样式影响组件，shared 表示双向影响。',
   },
   {
-    id: 466,
+    id: '466-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序自定义组件中，使用 `<slot>` 插槽时，如果需要多个插槽，需要在组件配置中设置？',
@@ -603,7 +603,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '使用多个插槽（具名插槽）时，需要在组件的 options 中设置 multipleSlots: true，然后在 WXML 中使用 <slot name="xxx"> 定义插槽。',
   },
   {
-    id: 467,
+    id: '467-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: 'UniApp 中，`renderjs` 的主要使用场景是？',
@@ -612,7 +612,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'renderjs 是 UniApp 提供的视图层脚本，运行在视图层（WebView），可以直接操作 DOM 和使用 window 对象，适合集成 Echarts、高德地图等需要 DOM 操作的第三方库。',
   },
   {
-    id: 468,
+    id: '468-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: 'UniApp 插件市场（uni_modules）安装的插件，更新时推荐使用？',
@@ -621,7 +621,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'uni_modules 是 UniApp 的插件规范，通过 HBuilderX 的插件市场安装后，可以直接在 HBuilderX 中检查更新并一键更新，保持插件版本同步。',
   },
   {
-    id: 469,
+    id: '469-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '微信小程序中，网络请求的域名需要在哪里配置？',
@@ -630,7 +630,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '小程序的服务器域名（request、uploadFile、downloadFile、socket 等）需要在微信公众平台的小程序管理后台 → 开发 → 开发管理 → 服务器域名中配置，且必须是 HTTPS。',
   },
   {
-    id: 470,
+    id: '470-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: '微信小程序包体积优化的有效手段包括？（多选）',
@@ -639,7 +639,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: '包体积优化手段：分包加载（主包只保留必要页面）、图片压缩/使用 webp（减少资源体积）、清理无用代码（tree-shaking）、大文件放 CDN（不计入包体积）。',
   },
   {
-    id: 471,
+    id: '471-miniprogram',
     type: 'single',
     category: 'miniprogram',
     question: '【场景题】某小程序需要实现图片上传功能，用户选择图片后需要压缩再上传。最佳实现方案是？',
@@ -653,7 +653,7 @@ export const miniprogramQuestions: Question[] = [
     explanation: 'wx.chooseImage 的 sizeType 参数可以指定图片质量，["compressed"] 会返回压缩后的图片，["original"] 返回原图。压缩后再用 wx.uploadFile 上传，既节省流量又提升速度。',
   },
   {
-    id: 472,
+    id: '472-miniprogram',
     type: 'multiple',
     category: 'miniprogram',
     question: '【场景题】某小程序需要实现分享功能，以下哪些是正确的做法？（多选）',
