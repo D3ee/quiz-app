@@ -178,6 +178,7 @@ async function handleClear() {
 .badge-javascript { background: rgba(251,191,36,0.12); color: var(--accent-amber); }
 .badge-vue2 { background: rgba(52,211,153,0.12); color: var(--accent-emerald); }
 .badge-vue3 { background: rgba(34,211,238,0.12); color: var(--accent-cyan); }
+.badge-miniprogram { background: rgba(167,139,250,0.12); color: var(--accent-violet); }
 .mode-badge { padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: rgba(99,102,241,0.12); color: var(--accent-indigo); }
 .history-center { flex: 1; }
 .history-score { display: flex; align-items: baseline; gap: 8px; }

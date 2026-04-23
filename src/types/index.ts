@@ -7,7 +7,7 @@
 export interface Question {
   id: number                                    // 题目唯一标识
   type: 'single' | 'multiple'                   // 题型：单选 | 多选
-  category: 'javascript' | 'vue2' | 'vue3'      // 所属分类
+  category: 'javascript' | 'vue2' | 'vue3' | 'miniprogram'      // 所属分类
   question: string                               // 题目文本（支持 Markdown 代码块）
   options: string[]                              // 选项列表（最多4个）
   answer: number | number[]                      // 正确答案索引（单选为数字，多选为数组）

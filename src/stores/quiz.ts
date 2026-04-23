@@ -10,12 +10,14 @@ import type { Question, Category, QuizMode, WrongRecord, QuizHistory } from '../
 import { javascriptQuestions } from '../data/javascript'
 import { vue2Questions } from '../data/vue2'
 import { vue3Questions } from '../data/vue3'
+import { miniprogramQuestions } from '../data/miniprogram'
 
 /** 题库池：按分类索引所有题目 */
 const questionPool: Record<Category, Question[]> = {
   javascript: javascriptQuestions,
   vue2: vue2Questions,
   vue3: vue3Questions,
+  miniprogram: miniprogramQuestions,
 }
 
 /** 获取指定分类的题库总数 */
@@ -50,6 +52,7 @@ export const useQuizStore = defineStore('quiz', () => {
     javascript: [],
     vue2: [],
     vue3: [],
+    miniprogram: [],
   })
 
   // ==================== 答题模式相关 ====================
@@ -297,6 +300,7 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
       ...questionPool.javascript,
       ...questionPool.vue2,
       ...questionPool.vue3,
+      ...questionPool.miniprogram,
     ]
     let selected = allQ.filter(q => favoriteIds.value.includes(q.id))
     if (category) selected = selected.filter(q => q.category === category)

@@ -155,6 +155,7 @@ const categories = reactive([
   { key: 'javascript' as Category, name: 'JavaScript', icon: 'JS', desc: '闭包、原型链、Promise、Event Loop 等核心知识', pool: getPoolSize('javascript'), options: buildOptions(getPoolSize('javascript')), selected: Math.min(10, getPoolSize('javascript')) },
   { key: 'vue2' as Category, name: 'Vue 2', icon: 'V2', desc: '生命周期、响应式原理、组件通信等', pool: getPoolSize('vue2'), options: buildOptions(getPoolSize('vue2')), selected: Math.min(10, getPoolSize('vue2')) },
   { key: 'vue3' as Category, name: 'Vue 3', icon: 'V3', desc: 'Composition API、ref/reactive、Teleport 等新特性', pool: getPoolSize('vue3'), options: buildOptions(getPoolSize('vue3')), selected: Math.min(10, getPoolSize('vue3')) },
+  { key: 'miniprogram' as Category, name: '小程序', icon: 'MP', desc: '原生小程序与 UniApp 跨端开发核心知识', pool: getPoolSize('miniprogram'), options: buildOptions(getPoolSize('miniprogram')), selected: Math.min(10, getPoolSize('miniprogram')) },
 ])
 
 /** 所有分类题目总数 */
@@ -296,6 +297,9 @@ function startFav() {
 .card-vue3 .card-glow {
   background: radial-gradient(circle at 50% 0%, rgba(34, 211, 238, 0.08), transparent 60%);
 }
+.card-miniprogram .card-glow {
+  background: radial-gradient(circle at 50% 0%, rgba(167, 139, 250, 0.08), transparent 60%);
+}
 
 .card-content {
   position: relative;
@@ -333,6 +337,11 @@ function startFav() {
   background: linear-gradient(135deg, rgba(34, 211, 238, 0.15), rgba(99, 102, 241, 0.15));
   color: var(--accent-cyan);
   box-shadow: 0 0 24px rgba(34, 211, 238, 0.1);
+}
+.icon-miniprogram {
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.15), rgba(139, 92, 246, 0.15));
+  color: var(--accent-violet);
+  box-shadow: 0 0 24px rgba(167, 139, 250, 0.1);
 }
 
 .card-title {
@@ -431,7 +440,7 @@ function startFav() {
     font-size: 30px;
   }
   .categories {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
   .quick-links {
