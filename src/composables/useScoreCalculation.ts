@@ -46,22 +46,46 @@ export function useScoreCalculation(
  * @param userAnswers - 用户作答记录（响应式引用）
  */
 export function useAnswerValidation(
-  userAnswers: Ref<Record<number, number | number[]>>
+  userAnswers: Ref<Record<string, number | number[] | boolean | string | string[]>>
 ) {
   /** 判断用户对某题的回答是否正确 */
   function isCorrect(q: Question): boolean {
     const ua = userAnswers.value[q.id]
     if (ua === undefined) return false
-    if (q.type === 'single') return ua === q.answer
-    const ans = q.answer as number[]
-    const user = ua as number[]
-    return ans.length === user.length && ans.every((a) => user.includes(a))
+
+    switch (q.type) {
+      case 'single':
+      case 'judge':
+        return ua === q.answer
+      case 'multiple': {
+        const ans = q.answer as number[]
+        const user = ua as number[]
+        return ans.length === user.length && ans.every((a) => user.includes(a))
+      }
+      case 'fill':
+      case 'short':
+      case 'code': {
+        // 填空题、简答题、代码题：答案为字符串，忽略首尾空格后比较
+        const userStr = String(ua).trim()
+        const answerStr = String(q.answer).trim()
+        return userStr === answerStr
+      }
+      case 'order': {
+        // 排序题：比较数组顺序
+        const ans = q.answer as number[]
+        const user = ua as number[]
+        return ans.length === user.length && ans.every((a, i) => user[i] === a)
+      }
+      default:
+        return ua === q.answer
+    }
   }
 
   /** 判断某选项是否为正确答案 */
   function isAnswer(q: Question, optIndex: number): boolean {
     if (q.type === 'single') return q.answer === optIndex
-    return (q.answer as number[]).includes(optIndex)
+    if (q.type === 'multiple' || q.type === 'order') return (q.answer as number[]).includes(optIndex)
+    return false
   }
 
   /** 判断某选项是否为用户的错误选择（选了但不是正确答案） */

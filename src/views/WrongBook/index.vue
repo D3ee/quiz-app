@@ -73,16 +73,17 @@ import { javascriptQuestions } from '../../data/javascript'
 import { vue2Questions } from '../../data/vue2'
 import { vue3Questions } from '../../data/vue3'
 import { miniprogramQuestions } from '../../data/miniprogram'
+import { advancedQuestions } from '../../data/advanced'
 import { ElMessageBox } from 'element-plus'
 
 const router = useRouter()
 const store = useQuizStore()
 const { renderQuestion } = useQuestionRenderer()
 
-const categoryNames: Record<Category, string> = { javascript: 'JavaScript', vue2: 'Vue 2', vue3: 'Vue 3', miniprogram: '小程序' }
+const categoryNames: Record<Category, string> = { javascript: 'JavaScript', vue2: 'Vue 2', vue3: 'Vue 3', miniprogram: '小程序', advanced: '进阶' }
 const labels = ['A', 'B', 'C', 'D']
 
-const allQuestions: Question[] = [...javascriptQuestions, ...vue2Questions, ...vue3Questions, ...miniprogramQuestions]
+const allQuestions: Question[] = [...javascriptQuestions, ...vue2Questions, ...vue3Questions, ...miniprogramQuestions, ...advancedQuestions]
 const questionMap = new Map(allQuestions.map(q => [q.id, q]))
 
 const wrongRecords = computed(() => store.wrongRecords)
@@ -92,7 +93,7 @@ const wrongWithQuestion = computed(() =>
 )
 
 const categoryStats = computed(() =>
-  (['javascript', 'vue2', 'vue3', 'miniprogram'] as Category[]).map(key => ({
+  (['javascript', 'vue2', 'vue3', 'miniprogram', 'advanced'] as Category[]).map(key => ({
     key,
     name: categoryNames[key],
     count: wrongRecords.value.filter(r => r.category === key).length,
@@ -154,6 +155,7 @@ function startAll() {
 .chip-vue2 { background: rgba(52,211,153,0.1); color: var(--accent-emerald); }
 .chip-vue3 { background: rgba(34,211,238,0.1); color: var(--accent-cyan); }
 .chip-miniprogram { background: rgba(167,139,250,0.1); color: var(--accent-violet); }
+.chip-advanced { background: rgba(244,114,182,0.1); color: var(--accent-pink); }
 .start-wrong-btn { margin-left: auto; padding: 8px 20px; border: none; border-radius: var(--radius-sm); background: var(--gradient-primary); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
 .start-wrong-btn:hover { box-shadow: 0 4px 16px rgba(99,102,241,0.3); }
 
@@ -166,6 +168,7 @@ function startAll() {
 .badge-vue2 { background: rgba(52,211,153,0.12); color: var(--accent-emerald); }
 .badge-vue3 { background: rgba(34,211,238,0.12); color: var(--accent-cyan); }
 .badge-miniprogram { background: rgba(167,139,250,0.12); color: var(--accent-violet); }
+.badge-advanced { background: rgba(244,114,182,0.12); color: var(--accent-pink); }
 .wrong-count { margin-left: auto; font-size: 12px; color: var(--accent-rose); font-weight: 600; }
 .wrong-question { font-size: 14px; line-height: 1.7; color: var(--text-primary); margin-bottom: 12px; }
 .wrong-question :deep(pre) { background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-sm); overflow-x: auto; margin: 8px 0; }
