@@ -7,7 +7,7 @@
 export interface Question {
   id: string                                    // 题目唯一标识（格式：数字-分类，如 "1-javascript"）
   type: 'single' | 'multiple' | 'judge' | 'fill' | 'short' | 'code' | 'order'  // 题型
-  category: 'javascript' | 'vue2' | 'vue3' | 'miniprogram'      // 所属分类
+  category: 'javascript' | 'vue2' | 'vue3' | 'miniprogram' | 'advanced'  // 所属分类
   question: string                               // 题目文本（支持 Markdown 代码块）
   options?: string[]                             // 选项列表（单选/多选/排序题必需）
   answer: number | number[] | boolean | string | string[]  // 正确答案（根据题型不同）

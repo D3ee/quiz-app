@@ -101,8 +101,21 @@ const categoryStats = computed(() =>
 )
 
 function formatAnswer(q: Question): string {
-  if (q.type === 'single') return labels[q.answer as number]
-  return (q.answer as number[]).map(i => labels[i]).join('、')
+  switch (q.type) {
+    case 'single':
+      return labels[q.answer as number]
+    case 'multiple':
+    case 'order':
+      return (q.answer as number[]).map(i => labels[i]).join('、')
+    case 'judge':
+      return q.answer ? '正确' : '错误'
+    case 'fill':
+    case 'short':
+    case 'code':
+      return String(q.answer)
+    default:
+      return String(q.answer)
+  }
 }
 
 /** 格式化时间戳为 月/日 时:分 */
@@ -112,7 +125,7 @@ function formatTime(ts: number): string {
 }
 
 /** 移除单条错题记录 */
-function removeRecord(qid: number) {
+function removeRecord(qid: string) {
   const idx = store.wrongRecords.findIndex(r => r.questionId === qid)
   if (idx >= 0) store.wrongRecords.splice(idx, 1)
 }
