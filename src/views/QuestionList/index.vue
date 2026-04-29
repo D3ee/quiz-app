@@ -61,7 +61,8 @@ const questionPool: Record<Category, Question[]> = {
   javascript: [...javascriptQuestions, ...advancedQuestions.filter(q => q.category === 'javascript')],
   vue2: [...vue2Questions, ...advancedQuestions.filter(q => q.category === 'vue2')],
   vue3: [...vue3Questions, ...advancedQuestions.filter(q => q.category === 'vue3')],
-  miniprogram: miniprogramQuestions,
+  miniprogram: [...miniprogramQuestions, ...advancedQuestions.filter(q => q.category === 'miniprogram')],
+  advanced: [...advancedQuestions],
 }
 
 const allQuestions = questionPool[category]
@@ -69,7 +70,7 @@ const filterType = ref<QuestionType | 'all'>('all')
 const sortOrder = ref<'asc' | 'desc'>('asc')
 
 const categoryName = computed(() => {
-  const map = { javascript: 'JavaScript', vue2: 'Vue 2', vue3: 'Vue 3', miniprogram: '小程序' }
+  const map: Record<Category, string> = { javascript: 'JavaScript', vue2: 'Vue 2', vue3: 'Vue 3', miniprogram: '小程序', advanced: '进阶' }
   return map[category]
 })
 

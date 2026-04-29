@@ -88,7 +88,7 @@ const router = useRouter()
 const store = useQuizStore()
 
 /** 分类名称映射 */
-const categoryNames: Record<Category, string> = { javascript: 'JavaScript', vue2: 'Vue 2', vue3: 'Vue 3' }
+const categoryNames: Record<Category, string> = { javascript: 'JavaScript', vue2: 'Vue 2', vue3: 'Vue 3', miniprogram: '小程序', advanced: '进阶' }
 /** 答题模式名称映射 */
 const modeNames: Record<QuizMode, string> = { random: '随机', timed: '限时', challenge: '闯关', sequential: '顺序' }
 

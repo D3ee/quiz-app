@@ -19,6 +19,9 @@ export interface Question {
 /** 题目分类类型 */
 export type Category = Question['category']
 
+/** 题目题型类型 */
+export type QuestionType = Question['type']
+
 /** 答题模式类型：随机 | 限时 | 闯关 | 顺序 */
 export type QuizMode = 'random' | 'timed' | 'challenge' | 'sequential'
 

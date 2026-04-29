@@ -206,6 +206,7 @@ const categoryNames: Record<Category, string> = {
   vue2: 'Vue 2',
   vue3: 'Vue 3',
   miniprogram: '小程序',
+  advanced: '进阶',
 }
 
 const category = route.params.category as Category
