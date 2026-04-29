@@ -333,6 +333,7 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
       ...questionPool.vue2,
       ...questionPool.vue3,
       ...questionPool.miniprogram,
+      ...questionPool.advanced,
     ]
     let selected = allQ.filter(q => favoriteIds.value.includes(q.id))
     if (category) selected = selected.filter(q => q.category === category)
