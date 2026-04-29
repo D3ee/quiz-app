@@ -19,6 +19,7 @@ const questionPool: Record<Category, Question[]> = {
   vue2: [...vue2Questions, ...advancedQuestions.filter(q => q.category === 'vue2')],
   vue3: [...vue3Questions, ...advancedQuestions.filter(q => q.category === 'vue3')],
   miniprogram: [...miniprogramQuestions, ...advancedQuestions.filter(q => q.category === 'miniprogram')],
+  advanced: [...advancedQuestions],
 }
 
 /** 获取指定分类的题库总数 */
@@ -54,6 +55,7 @@ export const useQuizStore = defineStore('quiz', () => {
     vue2: [],
     vue3: [],
     miniprogram: [],
+    advanced: [],
   })
 
   // ==================== 答题模式相关 ====================
