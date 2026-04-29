@@ -508,8 +508,8 @@ export const miniprogramQuestions: Question[] = [
     category: 'miniprogram',
     question: '微信小程序中，以下哪个 API 用于获取当前位置？',
     options: ['wx.getLocation', 'wx.chooseLocation', 'wx.openLocation', '以上都可以'],
-    answer: 3,
-    explanation: 'wx.getLocation 获取当前地理位置，wx.chooseLocation 打开地图选择位置，wx.openLocation 使用微信内置地图查看位置。三个都与位置相关，但 getLocation 是直接获取当前位置。',
+    answer: 0,
+    explanation: 'wx.getLocation 用于获取当前地理位置（经纬度），是直接获取当前位置的 API。wx.chooseLocation 打开地图让用户选择位置，wx.openLocation 使用微信内置地图查看指定位置，这两个都不是"获取当前位置"。',
   },
   {
     id: '457-miniprogram',
