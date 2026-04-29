@@ -53,10 +53,30 @@
           </div>
           <!-- 题目内容（支持代码高亮渲染） -->
           <div class="wrong-question" v-html="renderQuestion(record.question!.question)"></div>
+          <!-- 选项列表（单选/多选/排序题显示） -->
+          <div v-if="record.question!.options" class="wrong-options">
+            <div
+              v-for="(opt, idx) in record.question!.options"
+              :key="idx"
+              class="wrong-option"
+              :class="{
+                'option-correct': isAnswer(record.question!, idx),
+                'option-user-wrong': isUserWrong(record, idx),
+              }"
+            >
+              <span class="option-label">{{ labels[idx] }}.</span>
+              <span class="option-text">{{ opt }}</span>
+            </div>
+          </div>
           <!-- 正确答案 -->
           <div class="wrong-answer">
             <span class="answer-label">正确答案：</span>
             <span class="answer-value">{{ formatAnswer(record.question!) }}</span>
+          </div>
+          <!-- 用户的错误答案 -->
+          <div v-if="record.userAnswer !== undefined" class="wrong-user-answer">
+            <span class="answer-label">你的答案：</span>
+            <span class="answer-value user-wrong">{{ formatUserAnswer(record) }}</span>
           </div>
           <!-- 底部：最后错误时间 + 移除按钮 -->
           <div class="wrong-footer">
@@ -74,7 +94,7 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuizStore } from '../../stores/quiz'
 import { useQuestionRenderer } from '../../composables/useQuestionRenderer'
-import type { Category, Question } from '../../types'
+import type { Category, Question, WrongRecord } from '../../types'
 import { javascriptQuestions } from '../../data/javascript'
 import { vue2Questions } from '../../data/vue2'
 import { vue3Questions } from '../../data/vue3'
@@ -133,6 +153,45 @@ function formatAnswer(q: Question): string {
     default:
       return String(q.answer)
   }
+}
+
+/** 格式化用户答案显示 */
+function formatUserAnswer(record: WrongRecord & { question?: Question }): string {
+  const ua = record.userAnswer
+  const q = record.question
+  if (!q) return String(ua)
+  switch (q.type) {
+    case 'single':
+      return labels[ua as number] ?? String(ua)
+    case 'multiple':
+    case 'order':
+      return (ua as number[]).map(i => labels[i]).join('、')
+    case 'judge':
+      return ua ? '正确' : '错误'
+    case 'fill':
+    case 'short':
+    case 'code':
+      return String(ua)
+    default:
+      return String(ua)
+  }
+}
+
+/** 判断某选项是否为正确答案 */
+function isAnswer(q: Question, optIndex: number): boolean {
+  if (q.type === 'single') return q.answer === optIndex
+  if (q.type === 'multiple' || q.type === 'order') return (q.answer as number[]).includes(optIndex)
+  return false
+}
+
+/** 判断某选项是否为用户的错误选择 */
+function isUserWrong(record: WrongRecord & { question?: Question }, optIndex: number): boolean {
+  const ua = record.userAnswer
+  if (ua === undefined) return false
+  const q = record.question
+  if (!q) return false
+  const selected = q.type === 'single' ? ua === optIndex : (ua as number[]).includes(optIndex)
+  return selected && !isAnswer(q, optIndex)
 }
 
 /** 格式化时间戳为 月/日 时:分 */
@@ -206,9 +265,19 @@ function startAll() {
 .wrong-question :deep(pre) { background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-sm); overflow-x: auto; margin: 8px 0; }
 .wrong-question :deep(code) { font-family: 'Fira Code', Consolas, monospace; font-size: 13px; color: var(--accent-cyan); }
 .wrong-question :deep(.inline-code) { background: rgba(99,102,241,0.1); padding: 2px 8px; border-radius: 4px; color: var(--accent-indigo); }
-.wrong-answer { font-size: 13px; margin-bottom: 12px; }
+.wrong-options { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.wrong-option { display: flex; align-items: flex-start; gap: 8px; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); font-size: 13px; line-height: 1.5; transition: all 0.2s; }
+.wrong-option.option-correct { border-color: rgba(52,211,153,0.4); background: rgba(52,211,153,0.06); }
+.wrong-option.option-user-wrong { border-color: rgba(251,113,133,0.4); background: rgba(251,113,133,0.06); }
+.option-label { color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
+.option-text { color: var(--text-primary); }
+.wrong-option.option-correct .option-label { color: var(--accent-emerald); }
+.wrong-option.option-user-wrong .option-label { color: var(--accent-rose); }
+.wrong-answer { font-size: 13px; margin-bottom: 8px; }
+.wrong-user-answer { font-size: 13px; margin-bottom: 12px; }
 .answer-label { color: var(--text-muted); }
 .answer-value { color: var(--accent-emerald); font-weight: 600; }
+.answer-value.user-wrong { color: var(--accent-rose); }
 .wrong-footer { display: flex; align-items: center; justify-content: space-between; }
 .wrong-time { font-size: 12px; color: var(--text-muted); }
 .remove-btn { padding: 4px 12px; border: 1px solid var(--border-subtle); border-radius: 4px; background: transparent; color: var(--text-muted); font-size: 12px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
