@@ -70,6 +70,11 @@ export const useQuizStore = defineStore('quiz', () => {
   const quizHistory = ref<QuizHistory[]>([])            // 答题历史记录
   const favoriteIds = ref<string[]>([])                 // 收藏的题目ID列表
 
+  // 初始化时清理无效的收藏ID和错题记录（题库更新后旧ID可能失效）
+  const allValidIds = new Set(Object.values(questionPool).flat().map(q => q.id))
+  favoriteIds.value = favoriteIds.value.filter(id => allValidIds.has(id))
+  wrongRecords.value = wrongRecords.value.filter(r => allValidIds.has(r.questionId))
+
   // ==================== 计算属性 ====================
   /** 当前题目对象 */
   const currentQuestion = computed(() => questions.value[currentIndex.value])
@@ -333,7 +338,6 @@ function startQuiz(category: Category, count?: number, mode: QuizMode = 'random'
       ...questionPool.vue2,
       ...questionPool.vue3,
       ...questionPool.miniprogram,
-      ...questionPool.advanced,
     ]
     let selected = allQ.filter(q => favoriteIds.value.includes(q.id))
     if (category) selected = selected.filter(q => q.category === category)
