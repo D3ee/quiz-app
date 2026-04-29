@@ -30,7 +30,13 @@
     <template v-else>
       <!-- 分类统计条：按分类显示错题数量 + 全部错题练习按钮 -->
       <div class="stats-bar">
-        <div v-for="item in categoryStats" :key="item.key" class="stat-chip" :class="`chip-${item.key}`">
+        <div
+          v-for="item in categoryStats"
+          :key="item.key"
+          class="stat-chip"
+          :class="[`chip-${item.key}`, { 'chip-active': selectedCategory === item.key }]"
+          @click="toggleCategory(item.key)"
+        >
           {{ item.name }} <strong>{{ item.count }}</strong>
         </div>
         <button class="start-wrong-btn" @click="startAll">全部错题练习</button>
@@ -64,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuizStore } from '../../stores/quiz'
 import { useQuestionRenderer } from '../../composables/useQuestionRenderer'
@@ -88,8 +94,19 @@ const questionMap = new Map(allQuestions.map(q => [q.id, q]))
 
 const wrongRecords = computed(() => store.wrongRecords)
 
+// 当前选中的分类过滤，null 表示显示全部
+const selectedCategory = ref<Category | null>(null)
+
+/** 点击分类标签：切换过滤，再次点击取消 */
+function toggleCategory(key: Category) {
+  selectedCategory.value = selectedCategory.value === key ? null : key
+}
+
 const wrongWithQuestion = computed(() =>
-  wrongRecords.value.map(r => ({ ...r, question: questionMap.get(r.questionId) })).filter(r => r.question)
+  wrongRecords.value
+    .filter(r => selectedCategory.value === null || r.category === selectedCategory.value)
+    .map(r => ({ ...r, question: questionMap.get(r.questionId) }))
+    .filter(r => r.question)
 )
 
 const categoryStats = computed(() =>
@@ -162,7 +179,9 @@ function startAll() {
 .action-btn { padding: 12px 32px; border-radius: var(--radius-sm); background: var(--gradient-primary); border: none; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
 
 .stats-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
-.stat-chip { padding: 6px 14px; border-radius: 20px; font-size: 13px; color: var(--text-secondary); }
+.stat-chip { padding: 6px 14px; border-radius: 20px; font-size: 13px; color: var(--text-secondary); cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+.stat-chip:hover { transform: translateY(-1px); }
+.stat-chip.chip-active { border-color: currentColor; box-shadow: 0 0 12px rgba(99,102,241,0.15); }
 .stat-chip strong { margin-left: 4px; }
 .chip-javascript { background: rgba(251,191,36,0.1); color: var(--accent-amber); }
 .chip-vue2 { background: rgba(52,211,153,0.1); color: var(--accent-emerald); }
