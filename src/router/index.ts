@@ -7,7 +7,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { Category } from '../types'
 
 /** 合法的题目分类列表，用于路由守卫校验 */
-const validCategories: Category[] = ['javascript', 'vue2', 'vue3', 'miniprogram']
+const validCategories: Category[] = ['javascript', 'vue2', 'vue3', 'miniprogram', 'advanced']
 
 const router = createRouter({
   history: createWebHistory(),
